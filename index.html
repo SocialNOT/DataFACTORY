@@ -3,230 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MitSara | Intelligence Dashboard</title>
+    <title>MitSara | Tiranga Dashboard</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root { 
-            --gold: #d4af37; --bg: #05070a; --glass: rgba(255, 255, 255, 0.03); 
-            --border: rgba(255, 255, 255, 0.1); --text: #e0e0e0; --accent: #4834d4;
+            --saffron: #FF9933; --white: #FFFFFF; --green: #138808; --navy: #000080;
+            --bg: #fdfdfd; --card-bg: rgba(255, 255, 255, 0.85); --shadow: rgba(0,0,0,0.1);
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { 
-            font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); 
-            color: var(--text); margin: 0; padding-bottom: 100px; overflow-x: hidden;
-        }
-
-        /* --- STICKY DASHBOARD HEADER --- */
-        header {
-            position: sticky; top: 0; background: rgba(5, 7, 10, 0.8);
-            backdrop-filter: blur(20px); padding: 15px 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border); z-index: 1000;
-        }
-        .logo { font-weight: 900; color: var(--gold); letter-spacing: 2px; font-size: 0.8rem; }
-        .stats { display: flex; gap: 10px; font-size: 0.7rem; font-weight: bold; }
-        .stat-pill { background: var(--glass); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); }
-
-        /* --- MAIN LAYOUT --- */
-        .dashboard { padding: 15px; max-width: 800px; margin: auto; }
         
-        .section-label { 
-            font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1.5px; 
-            color: var(--gold); margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+        @keyframes marginPulse { 0% { margin: 10px; } 50% { margin: 12px; } 100% { margin: 10px; } }
+        @keyframes glowPulse { 0% { box-shadow: 0 0 5px var(--saffron); } 50% { box-shadow: 0 0 20px var(--green); } 100% { box-shadow: 0 0 5px var(--navy); } }
+        @keyframes textFlow { 0% { color: var(--saffron); } 33% { color: var(--navy); } 66% { color: var(--green); } 100% { color: var(--saffron); } }
+
+        body { 
+            font-family: 'Inter', system-ui, sans-serif; background: var(--bg); 
+            color: #333; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column;
         }
 
-        .module { 
-            background: var(--glass); border: 1px solid var(--border); 
-            border-radius: 20px; padding: 20px; margin-bottom: 20px;
-            backdrop-filter: blur(10px);
+        /* --- HEADER & ANIMATED LOGO --- */
+        header {
+            background: var(--white); border-bottom: 3px solid var(--navy);
+            padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000;
+        }
+        .logo { font-weight: 900; font-size: 1.1rem; animation: textFlow 5s infinite; letter-spacing: 1px; }
+        .nav-icons i { font-size: 1.2rem; margin-left: 15px; cursor: pointer; color: var(--navy); transition: 0.3s; }
+        .nav-icons i:hover { transform: scale(1.2) rotate(15deg); color: var(--saffron); }
+
+        /* --- MAIN VIEWPORT --- */
+        main { 
+            flex: 1; overflow-y: auto; padding: 15px; 
+            background: linear-gradient(180deg, rgba(255,153,51,0.05) 0%, rgba(255,255,255,1) 50%, rgba(19,136,8,0.05) 100%);
         }
 
-        /* --- PARAMETRIC CHIPS --- */
-        .tool-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .chip { 
-            background: rgba(0,0,0,0.3); border: 1px solid var(--border); 
-            padding: 12px; border-radius: 12px; font-size: 0.7rem; 
-            text-align: center; cursor: pointer; transition: 0.3s;
+        .card { 
+            background: var(--card-bg); border-radius: 15px; padding: 15px; 
+            margin-bottom: 15px; border: 1px solid #eee; box-shadow: 0 4px 10px var(--shadow);
+            transition: all 0.3s ease; animation: marginPulse 4s infinite;
         }
-        .chip.active { border-color: var(--gold); background: rgba(212, 175, 55, 0.1); color: var(--gold); }
-        .chip i { display: block; margin-bottom: 5px; font-size: 1rem; }
+        .card:hover { border: 1px solid var(--navy); box-shadow: 0 0 15px rgba(0,0,128,0.2); }
 
-        /* --- INPUTS --- */
+        /* --- STACKED GRID TOOLS --- */
+        .tool-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
+        .tool-chip { 
+            padding: 10px 5px; border-radius: 10px; background: white; border: 2px solid #f0f0f0;
+            font-size: 0.65rem; font-weight: bold; text-align: center; cursor: pointer;
+        }
+        .tool-chip.active { border-color: var(--saffron); background: rgba(255,153,51,0.1); color: var(--saffron); }
+        .tool-chip i { display: block; margin-bottom: 4px; font-size: 0.9rem; }
+
         textarea { 
-            width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--border); 
-            border-radius: 12px; padding: 15px; color: #fff; font-size: 0.85rem;
-            resize: none; transition: 0.3s;
+            width: 100%; border: 1px solid #ddd; border-radius: 10px; padding: 10px;
+            font-size: 0.8rem; background: #fafafa; transition: 0.3s; resize: none;
         }
-        textarea:focus { border-color: var(--gold); outline: none; }
+        textarea:focus { border-color: var(--navy); background: #fff; outline: none; }
 
-        .drop-area {
-            border: 2px dashed var(--border); padding: 30px; text-align: center;
-            border-radius: 15px; cursor: pointer; transition: 0.3s;
+        /* --- EXECUTION BUTTON --- */
+        .exec-area { padding: 10px 0; text-align: center; }
+        .magic-btn { 
+            width: 70px; height: 70px; border-radius: 50%; border: none; 
+            background: var(--navy); color: white; font-size: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,128,0.3); cursor: pointer;
+            transition: 0.3s; animation: glowPulse 3s infinite;
         }
-        .drop-area:active { transform: scale(0.98); border-color: var(--gold); }
+        .magic-btn:active { transform: scale(0.9); }
 
-        /* --- BOTTOM NAVIGATION --- */
-        .nav-bar {
-            position: fixed; bottom: 20px; left: 20px; right: 20px;
-            height: 70px; background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(25px); border-radius: 35px;
-            border: 1px solid var(--border); display: flex;
-            justify-content: space-around; align-items: center; z-index: 2000;
+        /* --- FOOTER CREDIT --- */
+        footer { 
+            background: var(--white); padding: 8px; text-align: center; 
+            font-size: 0.65rem; border-top: 1px solid #eee; color: #666;
         }
-        .nav-btn { color: #888; font-size: 1.2rem; background: none; border: none; cursor: pointer; }
-        .nav-btn.active { color: var(--gold); }
-        .fab { 
-            background: var(--gold); color: #000; width: 60px; height: 60px; 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; border: 5px solid var(--bg); margin-top: -50px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-        }
+        .credits b { color: var(--green); }
 
-        /* --- TOGGLE SWITCHES --- */
-        .toggle-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { 
-            position: absolute; cursor: pointer; inset: 0; background: #333; 
-            border-radius: 20px; transition: 0.4s; 
-        }
-        .slider:before { 
-            position: absolute; content: ""; height: 14px; width: 14px; 
-            left: 3px; bottom: 3px; background: white; transition: 0.4s; border-radius: 50%;
-        }
-        input:checked + .slider { background: var(--gold); }
-        input:checked + .slider:before { transform: translateX(20px); }
+        /* --- CUSTOM SWITCHES --- */
+        .switch-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 0.75rem; }
+        input[type="checkbox"] { accent-color: var(--green); transform: scale(1.2); }
 
+        .file-drop {
+            border: 2px dashed var(--navy); border-radius: 12px; padding: 20px;
+            text-align: center; font-size: 0.7rem; color: var(--navy); font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">MITSARA CORE</div>
-    <div class="stats">
-        <div class="stat-pill"><i class="fas fa-layer-group"></i> <span id="db-count">0</span></div>
-        <div class="stat-pill" style="color:var(--gold)">BETA V5</div>
+    <div class="logo">MITSARA <i class="fas fa-dharmachakra"></i> CORE</div>
+    <div class="nav-icons">
+        <i class="fas fa-th-large" title="Dashboard"></i>
+        <i class="fas fa-palette" title="Theme"></i>
+        <i class="fas fa-sliders-h" title="Settings"></i>
     </div>
 </header>
 
-<div class="dashboard">
-    <div class="section-label"><i class="fas fa-file-import"></i> Knowledge Ingestion</div>
-    <div class="module">
-        <div class="drop-area" onclick="document.getElementById('file-in').click()">
-            <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--gold); margin-bottom: 10px;"></i>
-            <div style="font-size: 0.8rem;">Tap to Process Knowledge</div>
-            <div style="font-size: 0.6rem; opacity: 0.5; margin-top: 5px;">PDF, MD, TXT Supported</div>
-            <input type="file" id="file-in" hidden onchange="processKnowledge(this.files[0])">
+<main>
+    <div class="card">
+        <div class="file-drop" onclick="document.getElementById('fin').click()">
+            <i class="fas fa-upload" style="font-size: 1.5rem; margin-bottom: 8px;"></i><br>
+            INGEST KNOWLEDGE (PDF/MD/TXT)
+            <input type="file" id="fin" hidden onchange="processFile(this.files[0])">
         </div>
-        <textarea id="raw-preview" rows="3" style="margin-top:15px;" placeholder="Pre-processed text preview..."></textarea>
+        <textarea id="raw-ctx" rows="3" style="margin-top:10px;" placeholder="Pre-processed context..."></textarea>
     </div>
 
-    <div class="section-label"><i class="fas fa-project-diagram"></i> Architecture & Logic</div>
-    <div class="module">
+    <div class="card">
         <div class="tool-grid">
-            <div class="chip active" onclick="toggleChip(this, 'CoT')"><i class="fas fa-link"></i> CoT</div>
-            <div class="chip" onclick="toggleChip(this, 'ToT')"><i class="fas fa-tree"></i> ToT</div>
-            <div class="chip" onclick="toggleChip(this, 'RAG')"><i class="fas fa-search"></i> RAG</div>
-            <div class="chip" onclick="toggleChip(this, 'RACE')"><i class="fas fa-bolt"></i> RACE</div>
+            <div class="tool-chip active" onclick="this.classList.toggle('active')"><i class="fas fa-brain"></i> CoT</div>
+            <div class="tool-chip" onclick="this.classList.toggle('active')"><i class="fas fa-microchip"></i> RAG</div>
+            <div class="tool-chip" onclick="this.classList.toggle('active')"><i class="fas fa-sitemap"></i> ToT</div>
+            <div class="tool-chip" onclick="this.classList.toggle('active')"><i class="fas fa-shield-alt"></i> BiasFix</div>
+            <div class="tool-chip" onclick="this.classList.toggle('active')"><i class="fas fa-clone"></i> De-Dup</div>
+            <div class="tool-chip" onclick="exportData()"><i class="fas fa-file-export"></i> Export</div>
+        </div>
+
+        <div class="switch-row">
+            <span>Clean Data Architecture</span>
+            <input type="checkbox" checked>
+        </div>
+        <div class="switch-row">
+            <span>Zero Duplication Engine</span>
+            <input type="checkbox" checked>
         </div>
     </div>
 
-    <div class="section-label"><i class="fas fa-broom"></i> Data Sanitization</div>
-    <div class="module">
-        <div class="toggle-row">
-            <span style="font-size: 0.75rem;">De-duplication Engine</span>
-            <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
-        </div>
-        <div class="toggle-row">
-            <span style="font-size: 0.75rem;">Bias Neutralization</span>
-            <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
-        </div>
-        <div class="toggle-row">
-            <span style="font-size: 0.75rem;">Auto-Anonymize PII</span>
-            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
-        </div>
+    <div class="card">
+        <textarea id="output" rows="5" placeholder="Intelligence Dataset Output..."></textarea>
     </div>
 
-    <div class="section-label"><i class="fas fa-code"></i> Intelligence Output</div>
-    <div class="module">
-        <textarea id="output-data" rows="8" placeholder="Generated dataset structure..."></textarea>
+    <div class="exec-area">
+        <button class="magic-btn" onclick="generate()"><i class="fas fa-bolt"></i></button>
+        <p style="font-size: 0.6rem; color: var(--navy); margin-top: 5px; font-weight: bold;">GENERATE DATASET</p>
     </div>
-</div>
+</main>
 
-<div class="nav-bar">
-    <button class="nav-btn active"><i class="fas fa-th-large"></i></button>
-    <button class="nav-btn" onclick="exportBatch()"><i class="fas fa-file-export"></i></button>
-    <div class="fab" onclick="generate()"><i class="fas fa-magic"></i></div>
-    <button class="nav-btn"><i class="fas fa-sliders-h"></i></button>
-    <button class="nav-btn" onclick="location.reload()"><i class="fas fa-sync"></i></button>
-</div>
+<footer>
+    <div class="credits">Fine-tuned Architecture by <b>MitSara AI</b> | 2026</div>
+</footer>
 
 <script>
-    let masterData = [];
-    let activeFrameworks = ['CoT'];
+    let db = [];
 
-    function toggleChip(el, type) {
-        el.classList.toggle('active');
-        if (activeFrameworks.includes(type)) {
-            activeFrameworks = activeFrameworks.filter(t => t !== type);
-        } else {
-            activeFrameworks.push(type);
-        }
-    }
-
-    async function processKnowledge(file) {
-        if (!file) return;
+    async function processFile(f) {
+        if (!f) return;
         const reader = new FileReader();
-        let text = "";
-
-        if (file.type === "application/pdf") {
-            const buffer = await file.arrayBuffer();
-            const pdf = await pdfjsLib.getDocument(buffer).promise;
+        if (f.type === "application/pdf") {
+            const buf = await f.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument(buf).promise;
+            let text = "";
             for (let i = 1; i <= pdf.numPages; i++) {
                 const page = await pdf.getPage(i);
                 const content = await page.getTextContent();
-                text += content.items.map(s => s.str).join(" ") + " ";
+                text += content.items.map(s => s.str).join(" ");
             }
+            document.getElementById('raw-ctx').value = text.replace(/\s+/g, ' ').trim();
         } else {
-            text = await file.text();
+            reader.onload = (e) => document.getElementById('raw-ctx').value = e.target.result;
+            reader.readAsText(f);
         }
-
-        // Clean: Zero duplication whitespace and artifacts
-        text = text.replace(/\s+/g, ' ').trim();
-        document.getElementById('raw-preview').value = text;
     }
 
     function generate() {
-        const input = document.getElementById('raw-preview').value;
-        if (!input) return alert("Knowledge input required.");
-
-        // Structural Generation based on Architecture
+        const ctx = document.getElementById('raw-ctx').value;
+        if (!ctx) return alert("Ingest Knowledge First");
+        
         const entry = {
-            instruction: "Extract logical core.",
-            input: input,
-            output: `1. Pratijna: [Thesis Derived]\n2. Hetu: [Framework: ${activeFrameworks.join(', ')}]\n3. Udaharana: ...\n4. Upanaya: ...\n5. Nigamana: ...`,
-            metadata: {
-                timestamp: new Date().toISOString(),
-                frameworks: activeFrameworks,
-                clean_status: "verified"
-            }
+            instruction: "Identify logical derivation.",
+            input: ctx.substring(0, 500),
+            output: "1. Pratijna: [Generated]\n2. Hetu: [Nyaya Verified]\n3. Udaharana: ...\n4. Upanaya: ...\n5. Nigamana: ...",
+            metadata: { architecture: "MitSara-v6", timestamp: Date.now() }
         };
-
-        masterData.push(entry);
-        document.getElementById('db-count').innerText = masterData.length;
-        document.getElementById('output-data').value = JSON.stringify(entry, null, 2);
+        
+        db.push(entry);
+        document.getElementById('output').value = JSON.stringify(entry, null, 2);
+        alert("Knowledge Sequenced!");
     }
 
-    function exportBatch() {
-        if (masterData.length === 0) return alert("Dataset is empty.");
-        const blob = new Blob([JSON.stringify(masterData, null, 2)], {type: 'application/json'});
+    function exportData() {
+        if (db.length === 0) return alert("Dataset Empty");
+        const blob = new Blob([JSON.stringify(db, null, 2)], {type: 'application/json'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `MitSara_Knowledge_Pack_${Date.now()}.json`;
+        a.download = `MitSara_Tiranga_Batch.json`;
         a.click();
     }
 </script>
