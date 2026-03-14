@@ -3,84 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MitSara Nexus | Template-Ready v18</title>
+    <title>MitSara Nexus | Production v19</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root { --saf: #FF9933; --grn: #138808; --nvy: #000080; --bg: #f5f6f7; }
+        :root { --saf: #FF9933; --grn: #138808; --nvy: #000080; --bg: #f8fafc; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
         header { background: #fff; padding: 12px 20px; border-bottom: 3px solid var(--nvy); display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
-        .brand { font-weight: 900; color: var(--nvy); font-size: 0.9rem; letter-spacing: 1px; }
+        .brand { font-weight: 900; color: var(--nvy); font-size: 0.9rem; }
         .chakra { animation: spin 18s linear infinite; font-size: 1.2rem; color: var(--nvy); }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        main { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 110px; }
+        main { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 130px; }
         .card { background: #fff; border-radius: 18px; padding: 15px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .label { font-size: 0.6rem; font-weight: 800; color: #888; text-transform: uppercase; margin-bottom: 8px; display: block; }
 
-        select, textarea, input { width: 100%; padding: 11px; border-radius: 10px; border: 1.5px solid #eee; font-size: 0.8rem; background: #fff; }
-        #term { background: #000; color: #00ff00; padding: 10px; border-radius: 10px; font-family: monospace; font-size: 0.65rem; height: 80px; overflow-y: auto; }
+        #term { background: #000; color: #00ff00; padding: 10px; border-radius: 10px; font-family: monospace; font-size: 0.65rem; height: 85px; overflow-y: auto; }
+        textarea { width: 100%; border: 1px solid #eee; border-radius: 10px; padding: 10px; font-size: 0.8rem; background: #fafafa; font-family: 'Courier New', monospace; }
 
-        .island { position: fixed; bottom: 20px; left: 12px; right: 12px; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(15px); height: 72px; border-radius: 36px; border: 1px solid rgba(0,0,128,0.15); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 2000; }
+        /* --- THE FLOATING ISLAND --- */
+        .island { position: fixed; bottom: 25px; left: 12px; right: 12px; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(15px); height: 75px; border-radius: 40px; border: 1px solid rgba(0,0,128,0.15); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 5000; }
         .island-btn { background: none; border: none; color: var(--nvy); font-size: 0.55rem; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; }
-        .island-btn i { font-size: 1.15rem; }
-        .bolt { width: 62px; height: 62px; border-radius: 50%; background: var(--nvy); color: #fff; border: 5px solid var(--bg); position: relative; top: -28px; display: flex; align-items: center; justify-content: center; font-size: 1.7rem; box-shadow: 0 6px 15px rgba(0,0,128,0.4); }
+        .bolt { width: 65px; height: 65px; border-radius: 50%; background: var(--nvy); color: #fff; border: 5px solid var(--bg); position: relative; top: -30px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 5px 15px rgba(0,0,128,0.4); }
 
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; padding: 20px; }
-        .modal-body { background: #fff; border-radius: 22px; padding: 22px; width: 100%; max-width: 400px; }
+        /* --- MODAL SYSTEM --- */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
+        .modal-body { background: #fff; border-radius: 25px; padding: 25px; width: 100%; max-width: 420px; position: relative; border-top: 8px solid var(--nvy); }
+        .close-icon { position: absolute; top: 15px; right: 20px; font-size: 1.2rem; color: #ccc; cursor: pointer; }
+        .close-icon:hover { color: var(--nvy); }
     </style>
 </head>
 <body>
 
 <header>
     <i class="fas fa-dharmachakra chakra"></i>
-    <div class="brand">MIT<span>SARA</span> v18</div>
-    <div style="display:flex; gap:15px">
-        <i class="fas fa-robot" onclick="toggleModal('template-modal')" title="Model Templates" style="color:var(--nvy)"></i>
-        <i class="fas fa-code" onclick="toggleModal('logic-modal')" style="color:var(--nvy)"></i>
+    <div class="brand">MIT<span>SARA</span> v19</div>
+    <div style="display:flex; gap:18px">
+        <i class="fas fa-file-csv" onclick="toggleModal('csv-modal')" title="CSV Transformer" style="color:var(--nvy)"></i>
+        <i class="fas fa-sliders-h" onclick="toggleModal('param-modal')" title="Parameters" style="color:var(--nvy)"></i>
+        <i class="fas fa-code" onclick="toggleModal('logic-modal')" title="Custom Logic" style="color:var(--nvy)"></i>
     </div>
 </header>
 
 <main>
     <div class="card">
-        <span class="label">Ingestion Module</span>
+        <span class="label">Knowledge Pipeline</span>
         <div onclick="document.getElementById('file-in').click()" style="border: 2px dashed var(--saf); padding: 20px; text-align: center; border-radius: 14px; cursor: pointer; color: var(--nvy); font-weight: 800; font-size: 0.75rem; background: #fff;">
-            <i class="fas fa-file-pdf" style="font-size: 1.4rem; margin-bottom: 6px; color: var(--saf);"></i><br>
-            INGEST KNOWLEDGE
+            <i class="fas fa-cloud-arrow-up" style="font-size: 1.5rem; margin-bottom: 5px; color: var(--saf);"></i><br>
+            INGEST SOURCE (PDF/TXT)
             <input type="file" id="file-in" hidden onchange="handleInflow(this.files[0])">
         </div>
-        <div id="term">> Status: Ready for Template Injection.</div>
+        <div id="term">> Nexus: Awaiting Knowledge Stream...</div>
     </div>
 
     <div class="card" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
         <div>
-            <span class="label">Logic Framework</span>
-            <select id="type-sel">
+            <span class="label">Logic Strategy</span>
+            <select id="type-sel" style="width:100%; padding:10px; border-radius:8px; border:1px solid #eee;">
                 <option value="cot">CoT (Chain)</option>
-                <option value="tot">ToT (Tree)</option>
                 <option value="rag">RAG/Vector</option>
-                <option value="react">ReAct</option>
+                <option value="qa">Clean Q&A</option>
                 <option value="custom">Custom JSON</option>
             </select>
         </div>
         <div>
-            <span class="label">Model Template</span>
-            <select id="template-sel">
-                <option value="raw">Raw JSON (No Header)</option>
-                <option value="llama3">Llama-3 Template</option>
-                <option value="mistral">Mistral Template</option>
-                <option value="gemma">Gemma Template</option>
+            <span class="label">Model Header</span>
+            <select id="template-sel" style="width:100%; padding:10px; border-radius:8px; border:1px solid #eee;">
+                <option value="raw">Raw JSON</option>
+                <option value="llama3">Llama-3</option>
+                <option value="mistral">Mistral</option>
             </select>
         </div>
     </div>
 
     <div class="card" style="flex: 1; display: flex; flex-direction: column;">
-        <span class="label">Dataset Intelligence Stream</span>
-        <textarea id="nexus-out" style="flex: 1;" placeholder="Engineered data will stream here..."></textarea>
+        <span class="label">Intelligence Stream</span>
+        <textarea id="nexus-out" style="flex: 1;" placeholder="Dataset output..."></textarea>
     </div>
 </main>
 
@@ -92,13 +94,32 @@
     <button class="island-btn" onclick="location.reload()"><i class="fas fa-sync"></i><span>RESET</span></button>
 </div>
 
-<div id="template-modal" class="modal">
+<div id="param-modal" class="modal">
     <div class="modal-body">
-        <h3 style="margin:0; color:var(--nvy)">Template Engine</h3>
-        <p style="font-size: 0.7rem; color: #666; margin-top: 10px;">
-            The engine automatically injects start/end tokens like <b>&lt;|begin_of_text|&gt;</b> or <b>[INST]</b> based on your selection.
-        </p>
-        <button onclick="toggleModal('template-modal')" style="width:100%; margin-top:15px; background:var(--nvy); color:white; border:none; padding:12px; border-radius:10px; font-weight:bold;">OK</button>
+        <i class="fas fa-times close-icon" onclick="toggleModal('param-modal')"></i>
+        <h3 style="margin-top:0; color:var(--nvy)">Semantic Parameters</h3>
+        <label class="label">Chunk Size</label>
+        <input type="number" id="chunk-size" value="1500" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; margin-bottom:15px;">
+        <button onclick="toggleModal('param-modal')" style="width:100%; background:var(--grn); color:white; border:none; padding:15px; border-radius:12px; font-weight:bold;">APPLY CONFIG</button>
+    </div>
+</div>
+
+<div id="csv-modal" class="modal">
+    <div class="modal-body">
+        <i class="fas fa-times close-icon" onclick="toggleModal('csv-modal')"></i>
+        <h3 style="margin-top:0; color:var(--nvy)">CSV-to-JSON Transformer</h3>
+        <p style="font-size: 0.7rem; color: #666;">Paste CSV data (Instruction, Input, Output) to convert to templated JSON.</p>
+        <textarea id="csv-input" rows="6" placeholder="instruction,input,output&#10;Explain math,2+2,4"></textarea>
+        <button onclick="transformCSV()" style="width:100%; margin-top:15px; background:var(--saf); color:white; border:none; padding:15px; border-radius:12px; font-weight:bold;">TRANSFORM DATA</button>
+    </div>
+</div>
+
+<div id="logic-modal" class="modal">
+    <div class="modal-body">
+        <i class="fas fa-times close-icon" onclick="toggleModal('logic-modal')"></i>
+        <h3 style="margin-top:0; color:var(--nvy)">Custom Logic Template</h3>
+        <textarea id="custom-json" rows="6" placeholder='{"instruction": "...", "output": "..."}'></textarea>
+        <button onclick="toggleModal('logic-modal')" style="width:100%; margin-top:15px; background:var(--nvy); color:white; border:none; padding:15px; border-radius:12px; font-weight:bold;">ACTIVATE</button>
     </div>
 </div>
 
@@ -121,52 +142,45 @@
     async function handleInflow(f) {
         if(!f) return;
         log(`Ingesting: ${f.name}`);
-        if (f.type === "application/pdf") {
+        if(f.type === "application/pdf") {
             const buffer = await f.arrayBuffer();
             const pdf = await pdfjsLib.getDocument({data: buffer}).promise;
             let text = "";
-            for (let i = 1; i <= pdf.numPages; i++) {
+            for(let i=1; i<=pdf.numPages; i++) {
                 const page = await pdf.getPage(i);
                 const content = await page.getTextContent();
                 text += content.items.map(s => s.str).join(" ") + " ";
             }
             activeText = text.replace(/\s+/g, ' ').trim();
         } else { activeText = await f.text(); }
-        log(`Success: ${activeText.length} chars buffered.`);
-        document.getElementById('nexus-out').value = `[SOURCE READY]\n${activeText.substring(0, 300)}...`;
+        log(`Success: ${activeText.length} chars ready.`);
     }
 
     function ignite() {
-        if(!activeText) return alert("Upload Source First.");
-        const type = document.getElementById('type-sel').value;
-        const temp = document.getElementById('template-sel').value;
-        log(`Injecting ${temp.toUpperCase()} onto ${type.toUpperCase()}...`);
-
-        const chunks = activeText.match(/.{1,1500}/g) || [];
-        let batch = [];
-
-        chunks.forEach((chunk, i) => {
-            let inst = `Analyze context segment ${i+1}`;
-            let out = `Framework: ${type}\nResult: [Autonomous Extraction]`;
-            let finalPrompt = "";
-
-            // TEMPLATE INJECTION LOGIC
-            if(temp === 'llama3') {
-                finalPrompt = `<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n${inst}\n\nInput: ${chunk.trim()}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n${out}<|eot_id|>`;
-            } else if(temp === 'mistral') {
-                finalPrompt = `<s>[INST] ${inst}\nInput: ${chunk.trim()} [/INST] ${out} </s>`;
-            } else if(temp === 'gemma') {
-                finalPrompt = `<start_of_turn>user\n${inst}\nInput: ${chunk.trim()}<end_of_turn>\n<start_of_turn>model\n${out}<end_of_turn>`;
-            } else {
-                finalPrompt = JSON.stringify({ instruction: inst, input: chunk.trim(), output: out });
-            }
-
-            batch.push(temp === 'raw' ? JSON.parse(finalPrompt) : { text: finalPrompt });
-        });
-
-        db = db.concat(batch);
+        if(!activeText) return alert("Ingest knowledge first!");
+        log("Executing Pipeline...");
+        const entry = {
+            instruction: "MitSara Intelligence Request",
+            input: activeText.substring(0, 1000),
+            output: "Generated Logic Stream...",
+            ts: Date.now()
+        };
+        db.push(entry);
         document.getElementById('nexus-out').value = JSON.stringify(db, null, 2);
-        log(`Pipeline Finished. ${batch.length} templated rows generated.`);
+    }
+
+    function transformCSV() {
+        const csv = document.getElementById('csv-input').value;
+        const lines = csv.split('\n');
+        lines.slice(1).forEach(line => {
+            const cols = line.split(',');
+            if(cols.length >= 3) {
+                db.push({ instruction: cols[0], input: cols[1], output: cols[2] });
+            }
+        });
+        document.getElementById('nexus-out').value = JSON.stringify(db, null, 2);
+        log("CSV Data Merged into Dataset.");
+        toggleModal('csv-modal');
     }
 
     function copyData() {
@@ -181,12 +195,12 @@
         const blob = new Blob([JSON.stringify(db, null, 2)], {type: 'application/json'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `MitSara_Nexus_v18.json`;
+        a.download = `MitSara_Nexus_v19.json`;
         a.click();
     }
 
     function shareData() {
-        if(navigator.share) navigator.share({title: 'MitSara Dataset', text: `Template-ready export.`});
+        if(navigator.share) navigator.share({title: 'MitSara Dataset', text: 'Dataset export ready.'});
     }
 </script>
 </body>
