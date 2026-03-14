@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MitSara Nexus | Master v20</title>
+    <title>MitSara Nexus | Privacy v21</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,33 +13,26 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-        /* --- STICKY NAVIGATION --- */
         header { background: #fff; padding: 12px 18px; border-bottom: 3px solid var(--nvy); display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
         .brand { font-weight: 900; color: var(--nvy); font-size: 0.9rem; letter-spacing: 1.5px; }
         .chakra { animation: spin 20s linear infinite; font-size: 1.3rem; color: var(--nvy); }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* --- MAIN WORKSPACE --- */
         main { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 120px; }
         .card { background: #fff; border-radius: 18px; padding: 16px; border: 1px solid #e0e6ed; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
         .label { font-size: 0.6rem; font-weight: 800; color: #8892b0; text-transform: uppercase; margin-bottom: 8px; display: block; }
 
-        #term { background: #0a0c10; color: #00ff00; padding: 10px; border-radius: 10px; font-family: 'Fira Code', monospace; font-size: 0.65rem; height: 90px; overflow-y: auto; line-height: 1.4; border: 1px solid #2d3436; }
-        textarea { width: 100%; border: 1px solid #e1e8ed; border-radius: 12px; padding: 12px; font-size: 0.8rem; background: #fff; font-family: 'Fira Code', monospace; transition: 0.2s; }
-        textarea:focus { border-color: var(--saf); }
+        #term { background: #0a0c10; color: #00ff00; padding: 10px; border-radius: 10px; font-family: 'Fira Code', monospace; font-size: 0.65rem; height: 90px; overflow-y: auto; border: 1px solid #2d3436; }
+        textarea { width: 100%; border: 1px solid #e1e8ed; border-radius: 12px; padding: 12px; font-size: 0.8rem; background: #fff; font-family: 'Fira Code', monospace; }
 
-        /* --- FLOATING ACTION ISLAND (V20) --- */
-        .island { position: fixed; bottom: 25px; left: 12px; right: 12px; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(15px); height: 75px; border-radius: 40px; border: 1px solid rgba(0,0,128,0.1); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 12px 40px rgba(0,0,0,0.15); z-index: 5000; padding: 0 5px; }
+        .island { position: fixed; bottom: 25px; left: 12px; right: 12px; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(15px); height: 75px; border-radius: 40px; border: 1px solid rgba(0,0,128,0.1); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 12px 40px rgba(0,0,0,0.15); z-index: 5000; }
         .island-btn { background: none; border: none; color: var(--nvy); font-size: 0.55rem; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; }
         .bolt { width: 68px; height: 68px; border-radius: 50%; background: var(--nvy); color: #fff; border: 6px solid var(--bg); position: relative; top: -30px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 6px 20px rgba(0,0,128,0.4); }
 
-        /* --- MODAL REFINEMENT --- */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
-        .modal-body { background: #fff; border-radius: 25px; padding: 25px; width: 100%; max-width: 420px; position: relative; border-top: 10px solid var(--nvy); box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
-        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.4rem; color: #ddd; cursor: pointer; transition: 0.2s; }
-        .close-btn:hover { color: var(--saf); }
+        .modal-body { background: #fff; border-radius: 25px; padding: 25px; width: 100%; max-width: 420px; position: relative; border-top: 10px solid var(--nvy); }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.4rem; color: #ddd; cursor: pointer; }
 
-        /* --- STAT PILLS --- */
         .stat-bar { display: flex; gap: 8px; margin-top: 5px; }
         .pill { background: #f1f2f6; padding: 3px 10px; border-radius: 20px; font-size: 0.6rem; font-weight: bold; color: var(--nvy); border: 1px solid #ddd; }
     </style>
@@ -48,10 +41,9 @@
 
 <header>
     <i class="fas fa-dharmachakra chakra"></i>
-    <div class="brand">MIT<span>SARA</span> NEXUS v20</div>
+    <div class="brand">MIT<span>SARA</span> NEXUS v21</div>
     <div style="display:flex; gap:18px">
-        <i class="fas fa-chart-pie" onclick="toggleModal('stats-modal')" title="Analytics"></i>
-        <i class="fas fa-file-csv" onclick="toggleModal('csv-modal')" title="CSV Transformer"></i>
+        <i class="fas fa-user-shield" onclick="toggleModal('privacy-modal')" title="Privacy Shield"></i>
         <i class="fas fa-sliders-h" onclick="toggleModal('param-modal')" title="Config"></i>
     </div>
 </header>
@@ -59,12 +51,12 @@
 <main>
     <div class="card">
         <span class="label">Knowledge Ingestion</span>
-        <div onclick="document.getElementById('file-in').click()" style="border: 2px dashed var(--saf); padding: 22px; text-align: center; border-radius: 16px; cursor: pointer; color: var(--nvy); font-weight: 800; font-size: 0.75rem; background: #fffdfa;">
-            <i class="fas fa-cloud-arrow-up" style="font-size: 1.6rem; margin-bottom: 10px; color: var(--saf);"></i><br>
-            INGEST SOURCE (PDF/TXT/MD)
+        <div onclick="document.getElementById('file-in').click()" style="border: 2px dashed var(--saf); padding: 22px; text-align: center; border-radius: 16px; cursor: pointer; color: var(--nvy); font-weight: 800; font-size: 0.75rem; background: #fff;">
+            <i class="fas fa-file-shield" style="font-size: 1.6rem; margin-bottom: 10px; color: var(--saf);"></i><br>
+            INGEST KNOWLEDGE (CLEAN & DE-ID)
             <input type="file" id="file-in" hidden onchange="handleInflow(this.files[0])">
         </div>
-        <div id="term">> Nexus v20: Intelligence Initialized.</div>
+        <div id="term">> Nexus v21: De-Identifier Module Loaded.</div>
     </div>
 
     <div class="card" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
@@ -82,15 +74,14 @@
             <select id="temp-sel" style="width:100%; padding:10px; border-radius:10px; border:1px solid #eee;">
                 <option value="raw">Raw JSON</option>
                 <option value="llama3">Llama-3</option>
-                <option value="mistral">Mistral</option>
             </select>
         </div>
     </div>
 
     <div class="card" style="flex: 1; display: flex; flex-direction: column;">
-        <span class="label">Intelligence Stream</span>
+        <span class="label">Privacy-Cleaned Stream</span>
         <textarea id="nexus-out" style="flex: 1;" placeholder="Engineered dataset stream..."></textarea>
-        <div class="stat-bar" id="stat-bar">
+        <div class="stat-bar">
             <div class="pill">ENTRIES: <span id="s-entries">0</span></div>
             <div class="pill">TOKENS: ~<span id="s-tokens">0</span></div>
         </div>
@@ -105,32 +96,26 @@
     <button class="island-btn" onclick="location.reload()"><i class="fas fa-sync"></i><span>RESET</span></button>
 </div>
 
+<div id="privacy-modal" class="modal">
+    <div class="modal-body">
+        <i class="fas fa-times-circle close-btn" onclick="toggleModal('privacy-modal')"></i>
+        <h3 style="margin-top:0; color:var(--nvy)">Privacy Shield</h3>
+        <p style="font-size:0.75rem; color:#666;">Select information types to redact (De-Identifier):</p>
+        <div style="display:flex; flex-direction:column; gap:10px; font-size:0.8rem;">
+            <label><input type="checkbox" id="scrub-email" checked> Email Addresses</label>
+            <label><input type="checkbox" id="scrub-phone" checked> Phone Numbers</label>
+            <label><input type="checkbox" id="scrub-url"> External URLs</label>
+        </div>
+        <button onclick="toggleModal('privacy-modal')" style="width:100%; margin-top:20px; background:var(--grn); color:white; border:none; padding:15px; border-radius:12px; font-weight:bold;">ACTIVATE SHIELD</button>
+    </div>
+</div>
+
 <div id="param-modal" class="modal">
     <div class="modal-body">
         <i class="fas fa-times-circle close-btn" onclick="toggleModal('param-modal')"></i>
-        <h3 style="margin-top:0; color:var(--nvy)">System Configuration</h3>
-        <label class="label">Semantic Chunk Size</label>
-        <input type="number" id="chunk-size" value="1500" style="width:100%; padding:12px; border-radius:10px; border:1px solid #ddd; margin-bottom:15px;">
-        <button onclick="toggleModal('param-modal')" style="width:100%; background:var(--grn); color:white; border:none; padding:15px; border-radius:12px; font-weight:bold;">APPLY CONFIG</button>
-    </div>
-</div>
-
-<div id="csv-modal" class="modal">
-    <div class="modal-body">
-        <i class="fas fa-times-circle close-btn" onclick="toggleModal('csv-modal')"></i>
-        <h3 style="margin-top:0; color:var(--nvy)">CSV Transformer</h3>
-        <textarea id="csv-input" rows="6" placeholder="instruction,input,output..."></textarea>
-        <button onclick="transformCSV()" style="width:100%; margin-top:15px; background:var(--saf); color:white; border:none; padding:15px; border-radius:12px; font-weight:bold;">MERGE CSV</button>
-    </div>
-</div>
-
-<div id="stats-modal" class="modal">
-    <div class="modal-body">
-        <i class="fas fa-times-circle close-btn" onclick="toggleModal('stats-modal')"></i>
-        <h3 style="margin-top:0; color:var(--nvy)">Dataset Analytics</h3>
-        <div id="detailed-stats" style="font-size: 0.8rem; line-height: 1.6;">
-            Processing knowledge metadata...
-        </div>
+        <h3 style="margin-top:0; color:var(--nvy)">Parameters</h3>
+        <input type="number" id="chunk-size" value="1500" style="width:100%; padding:10px; border-radius:10px; border:1px solid #ddd;">
+        <button onclick="toggleModal('param-modal')" style="width:100%; margin-top:20px; background:var(--nvy); color:white; border:none; padding:15px; border-radius:12px; font-weight:bold;">SAVE</button>
     </div>
 </div>
 
@@ -148,99 +133,74 @@
     function toggleModal(id) {
         const m = document.getElementById(id);
         m.style.display = (m.style.display === "flex") ? "none" : "flex";
-        if(id === 'stats-modal') runAnalytics();
+    }
+
+    function redact(text) {
+        let cleaned = text;
+        if(document.getElementById('scrub-email').checked) {
+            cleaned = cleaned.replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "[EMAIL]");
+        }
+        if(document.getElementById('scrub-phone').checked) {
+            cleaned = cleaned.replace(/(\+?\d{1,3}[- ]?)?\d{10}/g, "[PHONE]");
+        }
+        if(document.getElementById('scrub-url').checked) {
+            cleaned = cleaned.replace(/https?:\/\/[^\s]+/g, "[URL]");
+        }
+        return cleaned;
     }
 
     async function handleInflow(f) {
         if(!f) return;
         log(`Ingesting Stream: ${f.name}`);
+        let text = "";
         if(f.type === "application/pdf") {
             const buf = await f.arrayBuffer();
             const pdf = await pdfjsLib.getDocument({data: buf}).promise;
-            let text = "";
             for(let i=1; i<=pdf.numPages; i++) {
-                const page = await pdf.getPage(i);
-                const content = await page.getTextContent();
-                text += content.items.map(s => s.str).join(" ") + " ";
+                const p = await pdf.getPage(i);
+                const c = await p.getTextContent();
+                text += c.items.map(s => s.str).join(" ") + " ";
             }
-            activeRaw = text.replace(/\s+/g, ' ').trim();
-        } else { activeRaw = await f.text(); }
-        log(`Success: ${activeRaw.length} chars buffered.`);
-        document.getElementById('nexus-out').value = `[SOURCE INITIALIZED]\n${activeRaw.substring(0, 300)}...`;
+        } else { text = await f.text(); }
+        
+        activeRaw = redact(text.replace(/\s+/g, ' ').trim());
+        log(`Success: ${activeRaw.length} chars (Sanitized & De-Identified).`);
+        document.getElementById('nexus-out').value = activeRaw.substring(0, 400) + "...";
     }
 
     function ignite() {
         if(!activeRaw) return alert("Knowledge source required.");
         const type = document.getElementById('type-sel').value;
         const size = parseInt(document.getElementById('chunk-size').value);
-        const temp = document.getElementById('temp-sel').value;
-        
-        log(`Executing ${type.toUpperCase()} Pipeline...`);
         const chunks = activeRaw.match(new RegExp(`.{1,${size}}`, 'g')) || [];
         
         chunks.forEach((chunk, i) => {
-            let inst = `Analysis Task #${i+1}`;
-            let out = `Framework: ${type}\nResult: [Autonomous Extraction]`;
-            let entry = (temp === 'raw') ? { instruction: inst, input: chunk.trim(), output: out } : wrapTemplate(inst, chunk, out, temp);
-            db.push(entry);
+            db.push({ instruction: `Part ${i+1}`, input: chunk.trim(), output: `Framework: ${type}` });
         });
 
         document.getElementById('nexus-out').value = JSON.stringify(db, null, 2);
-        updateCounters();
-        log(`Success: ${chunks.length} entries added.`);
-    }
-
-    function wrapTemplate(inst, inp, out, type) {
-        if(type === 'llama3') return { text: `<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n${inst}\n\nInput: ${inp}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n${out}<|eot_id|>` };
-        if(type === 'mistral') return { text: `<s>[INST] ${inst}\nInput: ${inp} [/INST] ${out} </s>` };
-    }
-
-    function updateCounters() {
         document.getElementById('s-entries').innerText = db.length;
-        const charCount = JSON.stringify(db).length;
-        document.getElementById('s-tokens').innerText = Math.round(charCount / 4);
-    }
-
-    function runAnalytics() {
-        const stats = document.getElementById('detailed-stats');
-        stats.innerHTML = `
-            <b>Total Entries:</b> ${db.length}<br>
-            <b>Estimated Tokens:</b> ${Math.round(JSON.stringify(db).length / 4)}<br>
-            <b>Storage Size:</b> ${(JSON.stringify(db).length / 1024).toFixed(2)} KB<br>
-            <b>Strategy:</b> ${document.getElementById('type-sel').value.toUpperCase()}
-        `;
-    }
-
-    function transformCSV() {
-        const csv = document.getElementById('csv-input').value;
-        const lines = csv.split('\n');
-        lines.slice(1).forEach(line => {
-            const cols = line.split(',');
-            if(cols.length >= 3) db.push({ instruction: cols[0], input: cols[1], output: cols[2] });
-        });
-        document.getElementById('nexus-out').value = JSON.stringify(db, null, 2);
-        updateCounters();
-        toggleModal('csv-modal');
+        document.getElementById('s-tokens').innerText = Math.round(JSON.stringify(db).length / 4);
     }
 
     function copyData() {
         const box = document.getElementById('nexus-out');
         box.select();
         document.execCommand('copy');
-        alert("Nexus Stream Copied.");
+        alert("Privacy-Cleaned Stream Copied.");
     }
 
     function downloadData() {
-        if(db.length === 0) return alert("Empty DB.");
+        if(db.length === 0) return;
         const blob = new Blob([JSON.stringify(db, null, 2)], {type: 'application/json'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `MitSara_Master_v20.json`;
+        a.download = `MitSara_Clean_Dataset.json`;
         a.click();
     }
 
     function shareData() {
-        if(navigator.share) navigator.share({title: 'MitSara v20 Export', text: 'Intelligence Dataset Export ready.'});
+        if(navigator.share) navigator.share({title: 'MitSara v21 Clean Export', text: 'Non-biased, De-identified dataset.'});
     }
 </script>
 </body>
