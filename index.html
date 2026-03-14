@@ -2,127 +2,132 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MitSara Nexus | Production Stable</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>MitSara Nexus | Elite v13</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root { --saf: #FF9933; --wht: #FFFFFF; --grn: #138808; --nvy: #000080; --glass: rgba(255,255,255,0.95); }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', system-ui, sans-serif; background: #f0f2f5; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
-
-        @keyframes rotateChakra { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 0, 128, 0.4); } 70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(0, 0, 128, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 0, 128, 0); } }
-
-        header { background: #fff; padding: 12px 18px; border-bottom: 3px solid var(--nvy); display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .chakra { color: var(--nvy); animation: rotateChakra 15s linear infinite; font-size: 1.4rem; }
-        .nav-icons i { margin-left: 18px; font-size: 1.2rem; color: var(--nvy); cursor: pointer; transition: 0.3s; }
-
-        main { flex: 1; overflow-y: auto; padding: 15px; background: linear-gradient(180deg, rgba(255,153,51,0.05), #fff, rgba(19,136,8,0.05)); display: flex; flex-direction: column; gap: 12px; }
-        .card { background: var(--glass); border-radius: 16px; padding: 16px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .label { font-size: 0.65rem; font-weight: 800; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; display: block; }
-
-        .tool-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-        .tool { background: #fff; border: 1.5px solid #eee; border-radius: 10px; padding: 10px 2px; text-align: center; font-size: 0.6rem; font-weight: bold; cursor: pointer; color: var(--nvy); transition: 0.2s; }
-        .tool.active { border-color: var(--saf); background: rgba(255,153,51,0.1); color: var(--saf); }
-        .tool i { display: block; margin-bottom: 4px; font-size: 0.85rem; }
-
-        textarea { width: 100%; border: 1px solid #ddd; border-radius: 12px; padding: 12px; font-size: 0.8rem; background: #fafafa; font-family: 'Courier New', monospace; resize: none; outline: none; }
+        :root { --saf: #FF9933; --wht: #FFFFFF; --grn: #138808; --nvy: #000080; --bg: #f4f6f9; }
         
-        #status-bar { background: #000; color: #0f0; padding: 10px; border-radius: 8px; font-family: monospace; font-size: 0.65rem; margin-top: 8px; min-height: 60px; max-height: 100px; overflow-y: auto; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: -apple-system, sans-serif; background: var(--bg); 
+            margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        /* --- STICKY HEADER --- */
+        header { 
+            background: #fff; padding: 12px 18px; border-bottom: 3px solid var(--nvy); 
+            display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
+        }
+        .logo { font-weight: 900; color: var(--nvy); font-size: 0.9rem; letter-spacing: 1px; }
+        .logo span { color: var(--saf); }
+        .chakra { animation: rotate 15s linear infinite; font-size: 1.2rem; color: var(--nvy); }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* --- SCROLLABLE WORKSPACE --- */
+        main { 
+            flex: 1; overflow-y: auto; padding: 12px; 
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .card { background: #fff; border-radius: 12px; padding: 12px; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .label { font-size: 0.6rem; font-weight: 800; color: #888; text-transform: uppercase; margin-bottom: 8px; display: block; }
+
+        /* --- COMPACT TOOL GRID --- */
+        .tool-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+        .tool { 
+            background: #fff; border: 1.5px solid #eee; border-radius: 8px; padding: 8px 0; 
+            text-align: center; font-size: 0.55rem; font-weight: bold; cursor: pointer;
+        }
+        .tool.active { border-color: var(--saf); background: rgba(255,153,51,0.1); color: var(--saf); }
+        .tool i { display: block; font-size: 0.8rem; margin-bottom: 3px; }
+
+        /* --- TERMINAL & OUTPUT (FIXED HEIGHT) --- */
+        #term { background: #000; color: #00ff00; padding: 8px; border-radius: 8px; font-family: monospace; font-size: 0.65rem; height: 80px; overflow-y: auto; margin-top: 5px; }
+        textarea { width: 100%; border: 1px solid #ddd; border-radius: 10px; padding: 10px; font-size: 0.75rem; background: #fff; resize: none; min-height: 150px; }
+
+        /* --- THE DUAL-BAR NAVIGATION (FIXED AT BOTTOM) --- */
+        nav { 
+            background: #fff; border-top: 1px solid #ddd; padding: 10px 5px;
+            display: flex; justify-content: space-around; align-items: center; flex-shrink: 0;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .nav-btn { background: none; border: none; color: var(--nvy); font-size: 0.6rem; font-weight: bold; text-align: center; }
+        .nav-btn i { display: block; font-size: 1.1rem; margin-bottom: 3px; }
+        
+        .ignite-btn { 
+            width: 55px; height: 55px; border-radius: 50%; background: var(--nvy); 
+            color: white; border: 4px solid var(--bg); margin-top: -35px;
+            display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
 
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
-        .modal-inner { background: #fff; width: 100%; max-width: 400px; border-radius: 20px; padding: 25px; border-top: 8px solid var(--nvy); }
-
-        .exec-zone { display: flex; justify-content: center; padding: 10px 0; }
-        .ignite-btn { width: 65px; height: 65px; border-radius: 50%; border: none; background: var(--nvy); color: #fff; font-size: 1.8rem; cursor: pointer; animation: pulse 3s infinite; display: flex; align-items: center; justify-content: center; }
-
-        footer { background: #fff; border-top: 1px solid #eee; padding: 12px; display: flex; justify-content: space-around; align-items: center; }
-        .f-btn { border: none; background: none; color: var(--nvy); font-size: 0.65rem; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .modal-body { background: #fff; border-radius: 20px; padding: 20px; width: 100%; border-top: 5px solid var(--nvy); }
     </style>
 </head>
 <body>
 
 <header>
     <i class="fas fa-dharmachakra chakra"></i>
-    <div style="font-weight: 900; letter-spacing: 1px; color: var(--nvy);">MITSARA <span style="color:var(--saf)">NEXUS v11</span></div>
-    <div class="nav-icons">
-        <i class="fas fa-vial" onclick="runDiagnosticTest()" title="Run Self-Test"></i>
-        <i class="fas fa-cog" onclick="toggleModal('settings-modal')"></i>
-        <i class="fas fa-share-alt" onclick="shareDataset()"></i>
-    </div>
+    <div class="logo"><span>MIT</span>SARA NEXUS</div>
+    <i class="fas fa-cog" onclick="toggleModal('settings-modal')" style="color:var(--nvy)"></i>
 </header>
-
-<div id="settings-modal" class="modal">
-    <div class="modal-inner">
-        <h3 style="margin-top:0; color:var(--nvy)">Nexus Configuration</h3>
-        <label class="label">Auto Q&A Count (Full Doc)</label>
-        <input type="number" id="qa-count" value="10" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd;">
-        <label class="label" style="margin-top:15px">Architecture Profile</label>
-        <select id="model-arch" style="width:100%; padding:10px; border-radius:8px;">
-            <option value="llama3">Llama-3 (Instruct)</option>
-            <option value="mistral">Mistral (v0.3)</option>
-            <option value="rag">RAG Embedding Pack</option>
-        </select>
-        <button onclick="toggleModal('settings-modal')" style="width:100%; margin-top:20px; background:var(--grn); color:#fff; border:none; padding:15px; border-radius:10px; font-weight:bold;">Apply Settings</button>
-    </div>
-</div>
 
 <main>
     <div class="card">
-        <span class="label"><i class="fas fa-file-import"></i> Knowledge Source</span>
-        <div onclick="document.getElementById('file-in').click()" style="border: 2px dashed var(--saf); padding: 20px; text-align: center; border-radius: 12px; background: #fff; cursor: pointer; color: var(--nvy); font-weight: bold; font-size: 0.75rem;">
-            <i class="fas fa-upload" style="font-size: 1.2rem; margin-bottom: 8px;"></i><br>
-            INGEST KNOWLEDGE (PDF/TXT)
-            <input type="file" id="file-in" hidden onchange="handleInflow(this.files[0])">
+        <span class="label">Knowledge Hub</span>
+        <div onclick="document.getElementById('file-in').click()" style="border: 2px dashed var(--saf); padding: 15px; text-align: center; border-radius: 10px; cursor: pointer; color: var(--nvy); font-weight: bold; font-size: 0.7rem;">
+            <i class="fas fa-cloud-arrow-up"></i> UPLOAD SOURCE
+            <input type="file" id="file-in" hidden onchange="handleFile(this.files[0])">
         </div>
-        <div id="status-bar">> Nexus Idle. All systems online.</div>
+        <div id="term">> Awaiting Source...</div>
     </div>
 
     <div class="card">
-        <span class="label"><i class="fas fa-tools"></i> Logic Frameworks</span>
+        <span class="label">Architecture</span>
         <div class="tool-grid">
-            <div class="tool active" id="few" onclick="setLogic('few')"><i class="fas fa-layer-group"></i> Few Shot</div>
-            <div class="tool" id="long" onclick="setLogic('long')"><i class="fas fa-expand-arrows-alt"></i> Long Ctx</div>
-            <div class="tool" id="cot" onclick="setLogic('cot')"><i class="fas fa-link"></i> CoT</div>
-            <div class="tool" id="tot" onclick="setLogic('tot')"><i class="fas fa-project-diagram"></i> ToT</div>
-            <div class="tool" id="inject" onclick="setLogic('inject')"><i class="fas fa-syringe"></i> Injection</div>
-            <div class="tool" id="qa" onclick="setLogic('qa')"><i class="fas fa-question-circle"></i> Q&A</div>
-            <div class="tool" id="full" onclick="setLogic('full')"><i class="fas fa-file-alt"></i> Full Doc</div>
-            <div class="tool" id="rag" onclick="setLogic('rag')"><i class="fas fa-search"></i> RAG</div>
+            <div class="tool active" id="few" onclick="setMode('few')"><i class="fas fa-list-ul"></i> FewShot</div>
+            <div class="tool" id="long" onclick="setMode('long')"><i class="fas fa-expand"></i> LongCtx</div>
+            <div class="tool" id="cot" onclick="setMode('cot')"><i class="fas fa-brain"></i> CoT</div>
+            <div class="tool" id="full" onclick="setMode('full')"><i class="fas fa-database"></i> FullDoc</div>
         </div>
     </div>
 
-    <div class="card" style="flex: 1; display: flex; flex-direction: column;">
-        <span class="label"><i class="fas fa-code"></i> Nexus Intelligence Stream</span>
-        <textarea id="output-box" style="flex: 1;" placeholder="Engineered dataset will stream here..."></textarea>
-    </div>
-
-    <div class="exec-zone">
-        <button class="ignite-btn" onclick="ignite()"><i class="fas fa-bolt"></i></button>
+    <div class="card" style="flex: 1;">
+        <span class="label">Live Stream</span>
+        <textarea id="out-box" placeholder="Engineered dataset will stream here..."></textarea>
     </div>
 </main>
 
-<footer>
-    <button class="f-btn" onclick="copyResult()"><i class="fas fa-copy"></i><span>COPY</span></button>
-    <button class="f-btn" onclick="downloadResult()"><i class="fas fa-download"></i><span>DOWNLOAD</span></button>
-    <button class="f-btn" onclick="location.reload()"><i class="fas fa-sync"></i><span>RESET</span></button>
-</footer>
+<nav>
+    <button class="nav-btn" onclick="copyData()"><i class="fas fa-copy"></i>COPY</button>
+    <button class="nav-btn" onclick="shareData()"><i class="fas fa-share-nodes"></i>SHARE</button>
+    <div class="ignite-btn" onclick="process()"><i class="fas fa-bolt"></i></div>
+    <button class="nav-btn" onclick="downloadData()"><i class="fas fa-download"></i>EXPORT</button>
+    <button class="nav-btn" onclick="location.reload()"><i class="fas fa-sync"></i>RESET</button>
+</nav>
+
+<div id="settings-modal" class="modal">
+    <div class="modal-body">
+        <h3 style="margin-top:0">Config</h3>
+        <input type="number" id="qa-count" value="10" placeholder="Q&A Count" style="width:100%; padding:10px; margin-bottom:10px;">
+        <button onclick="toggleModal('settings-modal')" style="width:100%; background:var(--grn); color:white; border:none; padding:12px; border-radius:10px;">Apply</button>
+    </div>
+</div>
 
 <script>
-    // SET PDF.JS WORKER
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-
     let db = [];
-    let activeRaw = "";
-    let activeLogic = 'few';
+    let activeText = "";
+    let mode = "few";
 
-    function log(msg) {
-        const bar = document.getElementById('status-bar');
-        bar.innerHTML += `<br>> ${msg}`;
-        bar.scrollTop = bar.scrollHeight;
+    function log(m) {
+        const t = document.getElementById('term');
+        t.innerHTML += `<br>> ${m}`;
+        t.scrollTop = t.scrollHeight;
     }
 
     function toggleModal(id) {
@@ -130,110 +135,65 @@
         m.style.display = (m.style.display === "flex") ? "none" : "flex";
     }
 
-    function setLogic(mode) {
+    function setMode(m) {
         document.querySelectorAll('.tool').forEach(t => t.classList.remove('active'));
-        const el = document.getElementById(mode);
-        if(el) el.classList.add('active');
-        activeLogic = mode;
-        log(`Logic switched: ${mode.toUpperCase()}`);
+        document.getElementById(m).classList.add('active');
+        mode = m;
+        log(`Switched to ${m.toUpperCase()}`);
     }
 
-    async function handleInflow(file) {
-        if(!file) return;
-        log(`Converting: ${file.name}`);
-        
-        try {
-            if (file.type === "application/pdf") {
-                const buffer = await file.arrayBuffer();
-                const pdf = await pdfjsLib.getDocument({data: buffer}).promise;
-                let text = "";
-                for (let i = 1; i <= pdf.numPages; i++) {
-                    const page = await pdf.getPage(i);
-                    const content = await page.getTextContent();
-                    text += content.items.map(s => s.str).join(" ") + " ";
-                }
-                activeRaw = text.trim();
-            } else {
-                activeRaw = await file.text();
+    async function handleFile(f) {
+        if(!f) return;
+        log(`Reading: ${f.name}`);
+        if(f.type === "application/pdf") {
+            const buffer = await f.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({data: buffer}).promise;
+            let text = "";
+            for(let i=1; i<=pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const content = await page.getTextContent();
+                text += content.items.map(s => s.str).join(" ") + " ";
             }
-            log(`Success: ${activeRaw.length} chars ingested.`);
-            document.getElementById('output-box').value = `[Source Loaded]\n${activeRaw.substring(0, 300)}...`;
-        } catch(e) {
-            log(`ERROR: File parsing failed.`);
-            console.error(e);
-        }
-    }
-
-    function ignite() {
-        if(!activeRaw) {
-            alert("Knowledge Hub Empty.");
-            return;
-        }
-        log(`Pipeline Active: ${activeLogic}`);
-        
-        let entries = [];
-        const qaLimit = parseInt(document.getElementById('qa-count').value) || 10;
-
-        if(activeLogic === 'full') {
-            const chunkSize = Math.ceil(activeRaw.length / qaLimit);
-            for(let i = 0; i < qaLimit; i++) {
-                const chunk = activeRaw.substr(i * chunkSize, chunkSize);
-                if(chunk) {
-                    entries.push({
-                        instruction: `Summarize part ${i+1}`,
-                        input: chunk.trim(),
-                        output: "1. Pratijna: [Thesis Extracted]\n2. Nigamana: [Logical Conclusion]"
-                    });
-                }
-            }
-            log(`Full Doc Strategy: Generated ${entries.length} chunks.`);
+            activeText = text.trim();
         } else {
-            entries.push({
-                instruction: `MitSara ${activeLogic.toUpperCase()} Reasoning`,
-                input: activeRaw.substring(0, 1500),
-                output: "1. Pratijna: ...\n2. Hetu: ...\n3. Nigamana: ...",
-                metadata: { mode: activeLogic, timestamp: Date.now() }
-            });
-            log(`Logic Sequenced: 1 entry.`);
+            activeText = await f.text();
         }
-
-        db = db.concat(entries);
-        document.getElementById('output-box').value = JSON.stringify(db, null, 2);
+        log(`Loaded ${activeText.length} chars.`);
+        document.getElementById('out-box').value = activeText.substring(0, 500) + "...";
     }
 
-    function runDiagnosticTest() {
-        log("--- RUNNING DIAGNOSTIC ---");
-        setTimeout(() => log("Check: UI Components... OK"), 500);
-        setTimeout(() => log("Check: PDF Parser... OK"), 1000);
-        setTimeout(() => log("Check: Logic Orchestrator... OK"), 1500);
-        setTimeout(() => log("Check: Export Routines... OK"), 2000);
-        setTimeout(() => log("DIAGNOSTIC COMPLETE: System Stable."), 2500);
+    function process() {
+        if(!activeText) return alert("Upload source!");
+        log(`Generating ${mode}...`);
+        const entry = {
+            instruction: "Analysis Request",
+            input: activeText.substring(0, 500),
+            output: "1. Pratijna: ...\n2. Nigamana: ...",
+            ts: Date.now()
+        };
+        db.push(entry);
+        document.getElementById('out-box').value = JSON.stringify(db, null, 2);
     }
 
-    function copyResult() {
-        const box = document.getElementById('output-box');
-        if(!box.value) return;
+    function copyData() {
+        const box = document.getElementById('out-box');
         box.select();
         document.execCommand('copy');
-        log("Stream copied to clipboard.");
         alert("Copied!");
     }
 
-    function downloadResult() {
-        if(db.length === 0) return alert("Dataset empty.");
+    function downloadData() {
+        if(db.length === 0) return alert("No data!");
         const blob = new Blob([JSON.stringify(db, null, 2)], {type: 'application/json'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `MitSara_Nexus_v11_${Date.now()}.json`;
+        a.download = `MitSara_Dataset.json`;
         a.click();
-        log("Export successful.");
     }
 
-    function shareDataset() {
-        if (navigator.share && db.length > 0) {
-            navigator.share({ title: 'MitSara Dataset', text: `Exported ${db.length} entries.`, url: '#' });
-        } else {
-            alert("No data or sharing not supported.");
+    function shareData() {
+        if (navigator.share) {
+            navigator.share({title: 'MitSara Dataset', text: document.getElementById('out-box').value}).catch(console.error);
         }
     }
 </script>
