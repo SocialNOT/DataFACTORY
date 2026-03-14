@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MitSara Engine Configurator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <style>
+        :root { --gold: #d4af37; --dark: #2c3e50; --bg: #f4f7f6; }
+        body { font-family: 'Constantia', 'Georgia', serif; background: var(--bg); color: var(--dark); padding: 20px; }
+        .wrapper { max-width: 1000px; margin: auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        h1 { text-align: center; color: var(--gold); border-bottom: 2px solid var(--gold); padding-bottom: 10px; }
+        
+        .config-box { background: #fff9e6; border: 1px solid var(--gold); padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+        .config-box h3 { margin-top: 0; color: #856404; }
+
+        .editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        textarea { width: 100%; height: 120px; border: 1px solid #ccc; border-radius: 6px; padding: 10px; font-family: inherit; }
+        
+        .drop-zone { border: 2px dashed var(--gold); padding: 30px; text-align: center; margin: 20px 0; border-radius: 10px; transition: 0.3s; cursor: pointer; }
+        .drop-zone:hover { background: #fffdf5; }
+
+        .controls { margin-top: 30px; display: flex; justify-content: space-between; align-items: center; }
+        button { padding: 12px 25px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn-config { background: var(--gold); color: white; }
+        .btn-add { background: #27ae60; color: white; }
+        .btn-save { background: var(--dark); color: white; }
+        
+        .status { font-size: 0.9em; color: #666; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <h1>MitSara Engine Configurator</h1>
+
+    <div class="config-box">
+        <h3>1. Configure Engine via Seed Data</h3>
+        <p>Paste a sample JSON dataset below to set the logic baseline.</p>
+        <textarea id="seed-input" placeholder='Paste sample JSON here: [{"instruction": "...", "output": "..."}]'></textarea>
+        <div style="margin-top:10px;">
+            <button class="btn-config" onclick="configureEngine()">Configure Engine</button>
+            <span id="config-status" class="status">Engine status: Waiting for seed...</span>
+        </div>
+    </div>
+
+    <div class="editor-grid">
+        <div>
+            <label><strong>Source Knowledge (PDF/Text/MD)</strong></label>
+            <div class="drop-zone" id="drop-zone">
+                Drop Source File Here
+                <input type="file" id="file-input" hidden>
+            </div>
+            <textarea id="raw-context" placeholder="Text extracted from source will appear here..."></textarea>
+        </div>
+        <div>
+            <label><strong>Fine-Tune Goal (Instruction)</strong></label>
+            <textarea id="instr" placeholder="What question should this data answer?"></textarea>
+            
+            <label style="margin-top:10px; display:block;"><strong>Nyaya Logic Output</strong></label>
+            <textarea id="nyaya-out" style="height:180px;" placeholder="1. Pratijna: ..."></textarea>
+        </div>
+    </div>
+
+    <div class="controls">
+        <span id="total-count">Dataset Size: 0</span>
+        <div>
+            <button class="btn-add" onclick="addEntry()">Add Entry</button>
+            <button class="btn-save" onclick="exportJSON()">Export Master Dataset</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let masterDataset = [];
+    const pdfjsLib = window['pdfjs-dist/build/pdf'];
+
+    // CONFIGURE ENGINE
+    function configureEngine() {
+        try {
+            const seed = JSON.parse(document.getElementById('seed-input').value);
+            if(Array.isArray(seed) && seed.length > 0) {
+                masterDataset = seed;
+                updateUI();
+                document.getElementById('config-status').innerText = `Engine Online: ${seed.length} samples loaded.`;
+                document.getElementById('config-status').style.color = "#27ae60";
+            }
+        } catch(e) {
+            alert("Invalid JSON format. Please paste a valid JSON array.");
+        }
+    }
+
+    // FILE HANDLING
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    dropZone.onclick = () => fileInput.click();
+    fileInput.onchange = (e) => processFile(e.target.files[0]);
+
+    async function processFile(file) {
+        const reader = new FileReader();
+        if (file.type === "application/pdf") {
+            const arrayBuffer = await file.arrayBuffer();
+            const loadingTask = pdfjsLib.getDocument(arrayBuffer);
+            const pdf = await loadingTask.promise;
+            let fullText = "";
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const content = await page.getTextContent();
+                fullText += content.items.map(s => s.str).join(" ") + "\n";
+            }
+            document.getElementById('raw-context').value = fullText;
+        } else {
+            reader.onload = (e) => document.getElementById('raw-context').value = e.target.result;
+            reader.readAsText(file);
+        }
+        // Template prep
+        document.getElementById('nyaya-out').value = "1. Pratijna: \n2. Hetu: \n3. Udaharana: \n4. Upanaya: \n5. Nigamana: ";
+    }
+
+    // DATA MANAGEMENT
+    function addEntry() {
+        const entry = {
+            instruction: document.getElementById('instr').value.trim(),
+            input: document.getElementById('raw-context').value.trim(),
+            output: document.getElementById('nyaya-out').value.trim()
+        };
+        if(!entry.instruction || !entry.output) return alert("Missing fields.");
+        masterDataset.push(entry);
+        updateUI();
+        clearFields();
+    }
+
+    function updateUI() {
+        document.getElementById('total-count').innerText = `Dataset Size: ${masterDataset.length}`;
+    }
+
+    function clearFields() {
+        document.getElementById('instr').value = "";
+        document.getElementById('nyaya-out').value = "1. Pratijna: \n2. Hetu: \n3. Udaharana: \n4. Upanaya: \n5. Nigamana: ";
+    }
+
+    function exportJSON() {
+        const blob = new Blob([JSON.stringify(masterDataset, null, 2)], {type : 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "MitSara_Continuous_Data.json";
+        a.click();
+    }
+</script>
+
+</body>
+</html>
