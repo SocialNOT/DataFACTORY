@@ -3,194 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MitSara | Intelligence Nexus</title>
+    <title>MitSara Nexus | Production v10</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root { --saf: #FF9933; --wht: #FFFFFF; --grn: #138808; --nvy: #000080; --glass: rgba(255,255,255,0.95); --accent: #6c5ce7; }
-        
+        :root { --saf: #FF9933; --wht: #FFFFFF; --grn: #138808; --nvy: #000080; --glass: rgba(255,255,255,0.95); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', -apple-system, sans-serif; background: #f4f7f9; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: #f0f2f5; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 0, 128, 0.4); } 70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(0, 0, 128, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 0, 128, 0); } }
+        @keyframes rotateChakra { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 0, 128, 0.4); } 70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(0, 0, 128, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 0, 128, 0); } }
 
-        header { background: #fff; padding: 12px 18px; border-bottom: 3px solid var(--nvy); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .chakra { color: var(--nvy); animation: rotate 12s linear infinite; font-size: 1.5rem; }
-        .nav-actions i { margin-left: 18px; font-size: 1.2rem; color: var(--nvy); cursor: pointer; }
+        /* --- Header --- */
+        header { background: #fff; padding: 12px 18px; border-bottom: 3px solid var(--nvy); display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .chakra { color: var(--nvy); animation: rotateChakra 15s linear infinite; font-size: 1.4rem; }
+        .nav-icons i { margin-left: 18px; font-size: 1.2rem; color: var(--nvy); cursor: pointer; transition: 0.3s; }
+        .nav-icons i:active { color: var(--saf); transform: scale(1.2); }
 
-        /* Modal Architecture */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
-        .modal-card { background: #fff; width: 100%; max-width: 450px; border-radius: 24px; padding: 25px; border-top: 10px solid var(--nvy); max-height: 90vh; overflow-y: auto; }
+        /* --- Viewport --- */
+        main { flex: 1; overflow-y: auto; padding: 15px; background: linear-gradient(180deg, rgba(255,153,51,0.05), #fff, rgba(19,136,8,0.05)); display: flex; flex-direction: column; gap: 12px; }
+        .card { background: var(--glass); border-radius: 16px; padding: 16px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .label { font-size: 0.65rem; font-weight: 800; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; display: block; }
 
-        main { flex: 1; overflow-y: auto; padding: 15px; background: linear-gradient(135deg, #fffcf5 0%, #f5fff6 100%); display: flex; flex-direction: column; gap: 15px; }
-        .module { background: #fff; border-radius: 20px; padding: 20px; border: 1px solid #e0e0e0; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .label { font-size: 0.7rem; font-weight: 800; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: block; }
+        /* --- Tool Grid (Swiss Army Knife) --- */
+        .tool-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+        .tool { background: #fff; border: 1.5px solid #eee; border-radius: 10px; padding: 10px 2px; text-align: center; font-size: 0.6rem; font-weight: bold; cursor: pointer; color: var(--nvy); }
+        .tool.active { border-color: var(--saf); background: rgba(255,153,51,0.1); color: var(--saf); }
+        .tool i { display: block; margin-bottom: 4px; font-size: 0.85rem; }
 
-        /* Multi-Tool Grid */
-        .grid-tools { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .t-btn { background: #f8f9fa; border: 2px solid #eee; border-radius: 12px; padding: 10px 5px; text-align: center; font-size: 0.6rem; font-weight: bold; cursor: pointer; }
-        .t-btn.active { border-color: var(--saf); background: rgba(255,153,51,0.1); color: var(--saf); }
-        .t-btn i { display: block; margin-bottom: 5px; font-size: 0.9rem; }
+        /* --- Inputs --- */
+        textarea { width: 100%; border: 1px solid #ddd; border-radius: 12px; padding: 12px; font-size: 0.8rem; background: #fafafa; font-family: 'Courier New', monospace; resize: none; }
+        input[type="number"] { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 0.8rem; }
 
-        textarea { width: 100%; border: 1px solid #ddd; border-radius: 14px; padding: 15px; font-size: 0.85rem; background: #fafafa; font-family: 'Fira Code', monospace; }
-        
-        .status-bar { background: #1a1a1a; color: #00ff00; padding: 12px; border-radius: 12px; font-size: 0.7rem; font-family: 'Courier New', monospace; margin-top: 10px; }
+        /* --- Terminal / Status --- */
+        #status-bar { background: #000; color: #0f0; padding: 10px; border-radius: 8px; font-family: monospace; font-size: 0.65rem; margin-top: 8px; min-height: 40px; }
 
-        .magic-zone { display: flex; justify-content: center; padding: 10px 0; }
-        .bolt-btn { width: 75px; height: 75px; border-radius: 50%; border: none; background: var(--nvy); color: white; font-size: 2rem; cursor: pointer; animation: pulse 3s infinite; display: flex; align-items: center; justify-content: center; }
+        /* --- Modal --- */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-inner { background: #fff; width: 100%; max-width: 400px; border-radius: 20px; padding: 25px; border-top: 8px solid var(--nvy); }
 
-        footer { background: #fff; border-top: 1px solid #eee; padding: 12px; display: flex; justify-content: space-around; }
-        .f-action { border: none; background: none; color: var(--nvy); font-size: 0.65rem; font-weight: 900; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        
-        input, select { width: 100%; padding: 12px; margin-top: 8px; border-radius: 10px; border: 1px solid #ddd; font-size: 0.8rem; }
+        /* --- Action Center --- */
+        .exec-zone { display: flex; justify-content: center; padding: 10px 0; }
+        .ignite-btn { width: 65px; height: 65px; border-radius: 50%; border: none; background: var(--nvy); color: #fff; font-size: 1.8rem; cursor: pointer; animation: pulse 3s infinite; display: flex; align-items: center; justify-content: center; }
+
+        /* --- Footer --- */
+        footer { background: #fff; border-top: 1px solid #eee; padding: 12px; display: flex; justify-content: space-around; align-items: center; }
+        .f-btn { border: none; background: none; color: var(--nvy); font-size: 0.65rem; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .f-btn i { font-size: 1rem; }
     </style>
 </head>
 <body>
 
 <header>
     <i class="fas fa-dharmachakra chakra"></i>
-    <div style="font-weight: 900; letter-spacing: 2px; color: var(--nvy);">MITSARA <span style="color:var(--saf)">NEXUS</span></div>
-    <div class="nav-actions">
-        <i class="fas fa-microchip" onclick="toggle('tech-modal')"></i>
-        <i class="fas fa-user-shield" onclick="toggle('auth-modal')"></i>
+    <div style="font-weight: 900; letter-spacing: 1px; color: var(--nvy);">MITSARA <span style="color:var(--saf)">NEXUS v10</span></div>
+    <div class="nav-icons">
+        <i class="fas fa-cog" onclick="toggleModal('settings-modal')"></i>
+        <i class="fas fa-share-alt" onclick="shareDataset()"></i>
     </div>
 </header>
 
-<div id="auth-modal" class="modal">
-    <div class="modal-card">
-        <h3>Provider Integration</h3>
-        <label>Hugging Face Token</label>
-        <input type="password" id="hf-token" placeholder="hf_...">
-        <label>Kaggle Key</label>
-        <input type="password" id="kg-key" placeholder="904d...">
-        <button onclick="toggle('auth-modal')" style="width:100%; margin-top:20px; background:var(--nvy); color:#fff; border:none; padding:15px; border-radius:12px; font-weight:bold;">Save Credentials</button>
-    </div>
-</div>
-
-<div id="tech-modal" class="modal">
-    <div class="modal-card">
-        <h3>Vector & RAG Config</h3>
-        <label>Chunk Size (Tokens)</label>
-        <input type="number" id="chunk-size" value="512">
-        <label>Chunk Overlap</label>
-        <input type="number" id="overlap" value="50">
-        <label>Custom Logic Script</label>
-        <textarea id="custom-logic" rows="4" placeholder="function transform(txt) { return txt.toUpperCase(); }"></textarea>
-        <button onclick="toggle('tech-modal')" style="width:100%; margin-top:20px; background:var(--grn); color:#fff; border:none; padding:15px; border-radius:12px; font-weight:bold;">Apply Architecture</button>
+<div id="settings-modal" class="modal">
+    <div class="modal-inner">
+        <h3 style="margin-top:0; color:var(--nvy)">Nexus Configuration</h3>
+        <label class="label">Auto Q&A Count</label>
+        <input type="number" id="qa-count" value="10">
+        <label class="label" style="margin-top:15px">Architecture Profile</label>
+        <select id="model-arch" style="width:100%; padding:10px; border-radius:8px;">
+            <option value="llama3">Llama-3 (Instruct)</option>
+            <option value="mistral">Mistral (v0.3)</option>
+            <option value="rag">RAG Embedding Pack</option>
+        </select>
+        <button onclick="toggleModal('settings-modal')" style="width:100%; margin-top:20px; background:var(--grn); color:#fff; border:none; padding:15px; border-radius:10px; font-weight:bold;">Apply Settings</button>
     </div>
 </div>
 
 <main>
-    <div class="module">
-        <span class="label">Knowledge Ingestion</span>
-        <div onclick="document.getElementById('file-in').click()" style="border: 2px dashed var(--saf); padding: 25px; text-align: center; border-radius: 15px; background: #fffdf9; cursor: pointer; color: var(--nvy); font-weight: bold; font-size: 0.8rem;">
-            <i class="fas fa-file-export" style="font-size: 1.5rem; margin-bottom: 10px;"></i><br>
-            LOAD SOURCE FOR RAG / DATASET
-            <input type="file" id="file-in" hidden onchange="handleNexusInflow(this.files[0])">
+    <div class="card">
+        <span class="label"><i class="fas fa-file-import"></i> Knowledge Source</span>
+        <div onclick="document.getElementById('file-in').click()" style="border: 2px dashed var(--saf); padding: 20px; text-align: center; border-radius: 12px; background: #fff; cursor: pointer; color: var(--nvy); font-weight: bold; font-size: 0.75rem;">
+            <i class="fas fa-upload" style="font-size: 1.2rem; margin-bottom: 8px;"></i><br>
+            INGEST KNOWLEDGE (PDF/TXT)
+            <input type="file" id="file-in" hidden onchange="handleInflow(this.files[0])">
         </div>
-        <div class="status-bar" id="nexus-status">Nexus: Idle. Awaiting stream...</div>
+        <div id="status-bar">> Nexus Idle. Awaiting Knowledge...</div>
     </div>
 
-    <div class="module">
-        <span class="label">Processing Frameworks</span>
-        <div class="grid-tools">
-            <div class="t-btn active" onclick="this.classList.toggle('active')"><i class="fas fa-brain"></i> CoT</div>
-            <div class="t-btn" onclick="this.classList.toggle('active')"><i class="fas fa-project-diagram"></i> ToT</div>
-            <div class="t-btn" onclick="this.classList.toggle('active')"><i class="fas fa-search-plus"></i> RAG</div>
-            <div class="t-btn" onclick="this.classList.toggle('active')"><i class="fas fa-cube"></i> VEC</div>
+    <div class="card">
+        <span class="label"><i class="fas fa-tools"></i> Logic Frameworks</span>
+        <div class="tool-grid">
+            <div class="tool active" id="few" onclick="setLogic('few')"><i class="fas fa-layer-group"></i> Few Shot</div>
+            <div class="tool" id="long" onclick="setLogic('long')"><i class="fas fa-expand-arrows-alt"></i> Long Ctx</div>
+            <div class="tool" id="cot" onclick="setLogic('cot')"><i class="fas fa-link"></i> CoT</div>
+            <div class="tool" id="tot" onclick="setLogic('tot')"><i class="fas fa-project-diagram"></i> ToT</div>
+            <div class="tool" id="inject" onclick="setLogic('inject')"><i class="fas fa-syringe"></i> Injection</div>
+            <div class="tool" id="qa" onclick="setLogic('qa')"><i class="fas fa-question-circle"></i> Q&A</div>
+            <div class="tool" id="full" onclick="setLogic('full')"><i class="fas fa-file-alt"></i> Full Doc</div>
+            <div class="tool" id="rag" onclick="setLogic('rag')"><i class="fas fa-search"></i> RAG</div>
         </div>
     </div>
 
-    <div class="module" style="flex:1; display:flex; flex-direction:column;">
-        <span class="label">Nexus Output Stream</span>
-        <textarea id="stream-box" style="flex:1;" placeholder="Engineered data will be streamed here..."></textarea>
+    <div class="card" style="flex: 1; display: flex; flex-direction: column;">
+        <span class="label"><i class="fas fa-code"></i> Nexus Intelligence Stream</span>
+        <textarea id="output-box" style="flex: 1;" placeholder="Engineered dataset will stream here..."></textarea>
     </div>
 
-    <div class="magic-zone">
-        <button class="bolt-btn" onclick="igniteNexus()"><i class="fas fa-bolt"></i></button>
+    <div class="exec-zone">
+        <button class="ignite-btn" onclick="ignite()"><i class="fas fa-bolt"></i></button>
     </div>
 </main>
 
 <footer>
-    <button class="f-action" onclick="copyStream()"><i class="fas fa-copy"></i>COPY</button>
-    <button class="f-action" onclick="downloadNexus()"><i class="fas fa-download"></i>EXPORT</button>
-    <button class="f-action" onclick="location.reload()"><i class="fas fa-sync"></i>RESET</button>
-    <button class="f-action" onclick="alert('Pushing to HF/Kaggle...')"><i class="fas fa-cloud-upload-alt"></i>PUSH</button>
+    <button class="f-btn" onclick="copyResult()"><i class="fas fa-copy"></i><span>COPY</span></button>
+    <button class="f-btn" onclick="downloadResult()"><i class="fas fa-download"></i><span>DOWNLOAD</span></button>
+    <button class="f-btn" onclick="location.reload()"><i class="fas fa-sync"></i><span>RESET</span></button>
 </footer>
 
 <script>
-    let nexusDB = [];
-    let currentRaw = "";
+    let db = [];
+    let activeRaw = "";
+    let activeLogic = 'few';
 
-    function toggle(id) {
+    function log(msg) {
+        document.getElementById('status-bar').innerText = `> ${msg}`;
+    }
+
+    function toggleModal(id) {
         const m = document.getElementById(id);
         m.style.display = (m.style.display === "flex") ? "none" : "flex";
     }
 
-    async function handleNexusInflow(f) {
-        if(!f) return;
-        const status = document.getElementById('nexus-status');
-        status.innerText = `Ingesting ${f.name}...`;
+    function setLogic(mode) {
+        document.querySelectorAll('.tool').forEach(t => t.classList.remove('active'));
+        document.getElementById(mode).classList.add('active');
+        activeLogic = mode;
+        log(`Logic profile: ${mode.toUpperCase()}`);
+    }
 
-        if (f.type === "application/pdf") {
-            const buffer = await f.arrayBuffer();
+    async function handleInflow(file) {
+        if(!file) return;
+        log(`Converting ${file.name}...`);
+        
+        if (file.type === "application/pdf") {
+            const buffer = await file.arrayBuffer();
             const pdf = await pdfjsLib.getDocument(buffer).promise;
-            let fullText = "";
+            let text = "";
             for (let i = 1; i <= pdf.numPages; i++) {
                 const page = await pdf.getPage(i);
                 const content = await page.getTextContent();
-                fullText += content.items.map(s => s.str).join(" ") + " ";
+                text += content.items.map(s => s.str).join(" ") + " ";
             }
-            currentRaw = fullText;
+            activeRaw = text.trim();
         } else {
-            currentRaw = await f.text();
+            activeRaw = await file.text();
         }
-        
-        status.innerText = `Ingested: ${currentRaw.length} chars. Chunks ready.`;
-        document.getElementById('stream-box').value = `[SOURCE INITIALIZED]\n${currentRaw.substring(0, 500)}...`;
+        log(`Success: ${activeRaw.length} chars ingested.`);
+        document.getElementById('output-box').value = `[Source Loaded]\n${activeRaw.substring(0, 400)}...`;
     }
 
-    function igniteNexus() {
-        if(!currentRaw) return alert("Knowledge Stream Empty.");
-        const status = document.getElementById('nexus-status');
-        status.innerText = "Transforming into Nyaya Vectors...";
-
-        // Real Logic: Chunking Simulation for Swiss Knife Functionality
-        const chunkSize = parseInt(document.getElementById('chunk-size').value);
-        const chunk = currentRaw.substring(0, chunkSize);
+    function ignite() {
+        if(!activeRaw) return alert("Knowledge Hub Empty.");
+        log(`Executing ${activeLogic} Pipeline...`);
         
-        const entry = {
-            instruction: "Vectorized Reasoning Request",
-            context_chunk: chunk,
-            output: "1. Pratijna: [Thesis Extracted]\n2. Hetu: [Nyaya Reasoned]\n3. Nigamana: [Concluded]",
-            metadata: {
-                timestamp: Date.now(),
-                version: "Nexus-9.0"
-            }
-        };
+        const qaLimit = parseInt(document.getElementById('qa-count').value);
+        let entries = [];
 
-        nexusDB.push(entry);
-        document.getElementById('stream-box').value = JSON.stringify(nexusDB, null, 2);
-        status.innerText = "Success: Entry Sequenced to Nexus.";
+        // Automation: Chunking document based on logic
+        if(activeLogic === 'full') {
+            log("Converting entire document to dataset...");
+            const chunks = activeRaw.match(/.{1,1000}/g) || [];
+            chunks.forEach((c, i) => {
+                entries.push({ instruction: `Summarize part ${i+1}`, input: c, output: `1. Pratijna: [Logical Extraction]\n2. Nigamana: [Success]` });
+            });
+        } else {
+            entries.push({
+                instruction: `MitSara ${activeLogic.toUpperCase()} Analysis`,
+                input: activeRaw.substring(0, 1000),
+                output: "1. Pratijna: ...\n2. Hetu: ...\n3. Udaharana: ...\n4. Upanaya: ...\n5. Nigamana: ...",
+                metadata: { mode: activeLogic, timestamp: Date.now() }
+            });
+        }
+
+        db = db.concat(entries);
+        document.getElementById('output-box').value = JSON.stringify(db, null, 2);
+        log(`Nexus Stream Updated: ${db.length} total entries.`);
     }
 
-    function copyStream() {
-        const box = document.getElementById('stream-box');
+    function copyResult() {
+        const box = document.getElementById('output-box');
         box.select();
         document.execCommand('copy');
-        alert("Nexus Stream Copied.");
+        alert("Nexus Stream Copied!");
     }
 
-    function downloadNexus() {
-        if(nexusDB.length === 0) return alert("Nexus DB is empty.");
-        const blob = new Blob([JSON.stringify(nexusDB, null, 2)], {type: 'application/json'});
+    function downloadResult() {
+        if(db.length === 0) return;
+        const blob = new Blob([JSON.stringify(db, null, 2)], {type: 'application/json'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `MitSara_Nexus_Export.json`;
+        a.download = `MitSara_Nexus_v10_${Date.now()}.json`;
         a.click();
+    }
+
+    function shareDataset() {
+        if (navigator.share) {
+            navigator.share({ title: 'MitSara Dataset Export', text: document.getElementById('output-box').value.substring(0, 500), url: window.location.href })
+            .catch(console.error);
+        } else {
+            alert("Sharing not supported on this browser.");
+        }
     }
 </script>
 </body>
