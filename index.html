@@ -3,157 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MitSara Nexus | Autonomous v14</title>
+    <title>MitSara Nexus | Production v15</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root { --saf: #FF9933; --wht: #FFFFFF; --grn: #138808; --nvy: #000080; --bg: #f8fafc; --glass: rgba(255,255,255,0.95); }
+        :root { --saf: #FF9933; --grn: #138808; --nvy: #000080; --bg: #f0f2f5; }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        
         body { 
-            font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); 
+            font-family: -apple-system, system-ui, sans-serif; background: var(--bg); 
             margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden;
         }
 
-        /* --- STICKY HEADER --- */
+        /* --- STICKY TOP BAR --- */
         header { 
-            background: #fff; padding: 12px 18px; border-bottom: 3px solid var(--nvy); 
-            display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            background: #fff; padding: 12px 20px; border-bottom: 3px solid var(--nvy); 
+            display: flex; justify-content: space-between; align-items: center; z-index: 1000;
         }
-        .logo { font-weight: 900; color: var(--nvy); font-size: 0.95rem; letter-spacing: 1px; }
-        .logo span { color: var(--saf); }
-        .chakra { animation: rotate 15s linear infinite; font-size: 1.3rem; color: var(--nvy); }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .brand { font-weight: 900; font-size: 1rem; color: var(--nvy); letter-spacing: 1px; }
+        .brand span { color: var(--saf); }
+        .chakra { animation: spin 20s linear infinite; font-size: 1.3rem; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* --- SCROLLABLE WORKSPACE --- */
+        /* --- VIRTUAL WORKSPACE --- */
         main { 
             flex: 1; overflow-y: auto; padding: 15px; 
             display: flex; flex-direction: column; gap: 12px;
-            background: linear-gradient(180deg, rgba(255,153,51,0.03), #fff, rgba(19,136,8,0.03));
+            padding-bottom: 120px; /* Space for Floating Island */
         }
-        .card { background: var(--glass); border-radius: 16px; padding: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        .label { font-size: 0.65rem; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 10px; display: block; letter-spacing: 0.5px; }
-
-        /* --- SYSTEM CONFIG GRID --- */
-        .config-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 5px; }
-        select, input { 
-            width: 100%; background: #fff; border: 1.5px solid #e2e8f0; 
-            border-radius: 10px; padding: 10px; font-size: 0.75rem; font-weight: 600; color: var(--nvy);
-        }
-
-        /* --- LOG TERMINAL --- */
-        #term { 
-            background: #0f172a; color: #38bdf8; padding: 12px; border-radius: 12px; 
-            font-family: 'Fira Code', monospace; font-size: 0.7rem; height: 100px; 
-            overflow-y: auto; line-height: 1.5; border: 1px solid #1e293b;
-        }
-
-        /* --- OUTPUT STREAM --- */
-        textarea { 
-            width: 100%; border: 1px solid #e2e8f0; border-radius: 14px; 
-            padding: 15px; font-size: 0.85rem; background: #fff; 
-            resize: none; flex: 1; min-height: 200px; color: #1e293b;
-        }
-
-        /* --- FIXED NAVIGATION BAR --- */
-        nav { 
-            background: #fff; border-top: 1px solid #e2e8f0; padding: 12px 10px;
-            display: flex; justify-content: space-around; align-items: center; flex-shrink: 0;
-            padding-bottom: calc(12px + env(safe-area-inset-bottom));
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
-        }
-        .nav-btn { background: none; border: none; color: var(--nvy); font-size: 0.65rem; font-weight: 800; text-align: center; }
-        .nav-btn i { display: block; font-size: 1.2rem; margin-bottom: 4px; }
         
-        /* Floating Action Bolt */
-        .ignite-btn { 
-            width: 64px; height: 64px; border-radius: 50%; background: var(--nvy); 
-            color: white; border: 5px solid var(--bg); margin-top: -45px;
-            display: flex; align-items: center; justify-content: center; font-size: 1.7rem;
-            box-shadow: 0 8px 20px rgba(0,0,128,0.3); transition: 0.2s;
+        .card { background: #fff; border-radius: 16px; padding: 15px; border: 1px solid #ddd; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .label { font-size: 0.65rem; font-weight: 800; color: #777; text-transform: uppercase; margin-bottom: 8px; display: block; }
+
+        /* --- INTERACTIVE MODULES --- */
+        #term { background: #0a0a0a; color: #00ff00; padding: 10px; border-radius: 10px; font-family: monospace; font-size: 0.7rem; height: 90px; overflow-y: auto; }
+        textarea { width: 100%; border: 1px solid #ddd; border-radius: 12px; padding: 12px; font-size: 0.85rem; background: #fff; resize: none; min-height: 200px; }
+        
+        select { width: 100%; padding: 12px; border-radius: 10px; border: 1.5px solid #eee; font-weight: 600; font-size: 0.8rem; background: #fff; color: var(--nvy); }
+
+        /* --- THE FLOATING ISLAND (FIXED UI) --- */
+        .floating-island {
+            position: fixed; bottom: 25px; left: 15px; right: 15px;
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px);
+            height: 70px; border-radius: 35px; border: 1px solid rgba(0,0,128,0.2);
+            display: flex; justify-content: space-around; align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 2000;
+            padding: 0 10px;
         }
-        .ignite-btn:active { transform: scale(0.9) rotate(15deg); }
+
+        .island-btn { background: none; border: none; color: var(--nvy); font-size: 0.6rem; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+        .island-btn i { font-size: 1.2rem; }
+
+        .ignite-bolt {
+            width: 65px; height: 65px; border-radius: 50%; background: var(--nvy);
+            color: #fff; border: 5px solid var(--bg); position: relative;
+            top: -30px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; box-shadow: 0 5px 15px rgba(0,0,128,0.4);
+            transition: 0.2s;
+        }
+        .ignite-bolt:active { transform: scale(0.9); }
 
         /* Settings Modal */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; align-items: center; justify-content: center; padding: 25px; backdrop-filter: blur(5px); }
-        .modal-content { background: #fff; border-radius: 24px; padding: 25px; width: 100%; max-width: 400px; border-top: 8px solid var(--nvy); }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-body { background: #fff; border-radius: 24px; padding: 25px; width: 100%; max-width: 400px; border-top: 6px solid var(--nvy); }
     </style>
 </head>
 <body>
 
 <header>
     <i class="fas fa-dharmachakra chakra"></i>
-    <div class="logo">MITSARA <span>NEXUS v14</span></div>
-    <div style="display: flex; gap: 15px;">
-        <i class="fas fa-sliders-h" onclick="toggleModal('config-modal')" style="color:var(--nvy)"></i>
-    </div>
+    <div class="brand">MITSARA <span>NEXUS v15</span></div>
+    <i class="fas fa-sliders-h" onclick="toggleModal('m-config')" style="color:var(--nvy)"></i>
 </header>
 
 <main>
     <div class="card">
-        <span class="label"><i class="fas fa-bolt"></i> Knowledge Inflow</span>
-        <div onclick="document.getElementById('file-in').click()" style="border: 2px dashed var(--saf); padding: 25px; text-align: center; border-radius: 16px; cursor: pointer; color: var(--nvy); font-weight: bold; font-size: 0.8rem; background: #fff;">
-            <i class="fas fa-file-pdf" style="font-size: 1.5rem; margin-bottom: 8px; color: var(--saf);"></i><br>
-            DROP PDF / MD / TXT
+        <span class="label"><i class="fas fa-bolt"></i> Source Inflow</span>
+        <div onclick="document.getElementById('file-in').click()" style="border: 2px dashed var(--saf); padding: 20px; text-align: center; border-radius: 12px; cursor: pointer; color: var(--nvy); font-weight: bold; font-size: 0.75rem;">
+            <i class="fas fa-file-export" style="font-size: 1.4rem; margin-bottom: 8px; color: var(--saf);"></i><br>
+            INGEST PDF / TXT
             <input type="file" id="file-in" hidden onchange="handleInflow(this.files[0])">
         </div>
         <div id="term">> Awaiting Knowledge Stream...</div>
     </div>
 
-    <div class="card">
-        <span class="label"><i class="fas fa-cog"></i> Autonomous Config</span>
-        <div class="config-grid">
-            <select id="arch-select">
-                <option value="llama3">Llama-3 (Instruct)</option>
-                <option value="mistral">Mistral (v0.3)</option>
-                <option value="custom">Custom Engine</option>
-            </select>
-            <select id="strategy-select">
-                <option value="nyaya">Nyaya Logic</option>
-                <option value="cot">CoT Framework</option>
-                <option value="rag">RAG Chunking</option>
-            </select>
+    <div class="card" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div>
+            <span class="label">Architecture</span>
+            <select id="arch"><option>Llama-3</option><option>Mistral</option></select>
+        </div>
+        <div>
+            <span class="label">Logic</span>
+            <select id="strat"><option>Nyaya</option><option>CoT</option></select>
         </div>
     </div>
 
     <div class="card" style="flex: 1; display: flex; flex-direction: column;">
-        <span class="label"><i class="fas fa-code"></i> Intelligence Stream</span>
-        <textarea id="out-box" placeholder="Autonomous dataset will generate here based on your document content..."></textarea>
+        <span class="label">Intelligence Stream</span>
+        <textarea id="out" placeholder="Dataset will generate here..."></textarea>
     </div>
 </main>
 
-<nav>
-    <button class="nav-btn" onclick="copyData()"><i class="fas fa-copy"></i>COPY</button>
-    <button class="nav-btn" onclick="shareData()"><i class="fas fa-share-nodes"></i>SHARE</button>
-    <div class="ignite-btn" onclick="ignite()"><i class="fas fa-bolt"></i></div>
-    <button class="nav-btn" onclick="downloadData()"><i class="fas fa-download"></i>EXPORT</button>
-    <button class="nav-btn" onclick="location.reload()"><i class="fas fa-sync"></i>RESET</button>
-</nav>
+<div class="floating-island">
+    <button class="island-btn" onclick="copyData()"><i class="fas fa-copy"></i><span>COPY</span></button>
+    <button class="island-btn" onclick="shareData()"><i class="fas fa-share-nodes"></i><span>SHARE</span></button>
+    
+    <div class="ignite-bolt" onclick="ignite()"><i class="fas fa-bolt"></i></div>
+    
+    <button class="island-btn" onclick="exportData()"><i class="fas fa-download"></i><span>EXPORT</span></button>
+    <button class="island-btn" onclick="location.reload()"><i class="fas fa-sync"></i><span>RESET</span></button>
+</div>
 
-<div id="config-modal" class="modal">
-    <div class="modal-content">
-        <h3 style="margin-top:0; color:var(--nvy)">Nexus Parameters</h3>
-        <label class="label">Auto-Generation Count</label>
-        <input type="number" id="gen-count" value="10">
-        <label class="label" style="margin-top:15px">Cleaning Filter Intensity</label>
-        <input type="range" min="1" max="5" value="3" style="width:100%">
-        <button onclick="toggleModal('config-modal')" style="width:100%; margin-top:20px; background:var(--grn); color:white; border:none; padding:15px; border-radius:12px; font-weight:bold;">SAVE CONFIG</button>
+<div id="m-config" class="modal">
+    <div class="modal-body">
+        <h3 style="margin:0">Config</h3>
+        <label class="label" style="margin-top:10px">Generation Count</label>
+        <input type="number" id="g-count" value="10" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd;">
+        <button onclick="toggleModal('m-config')" style="width:100%; margin-top:20px; background:var(--nvy); color:white; border:none; padding:15px; border-radius:12px; font-weight:bold;">SAVE</button>
     </div>
 </div>
 
 <script>
-    // Initialize PDF Worker
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-    
     let db = [];
-    let sourceContent = "";
+    let rawText = "";
 
-    function log(msg) {
+    function log(m) {
         const t = document.getElementById('term');
-        t.innerHTML += `<br>> ${msg}`;
+        t.innerHTML += `<br>> ${m}`;
         t.scrollTop = t.scrollHeight;
     }
 
@@ -162,90 +142,58 @@
         m.style.display = (m.style.display === "flex") ? "none" : "flex";
     }
 
-    async function handleInflow(file) {
-        if(!file) return;
-        log(`Processing: ${file.name}`);
-        
-        try {
-            if (file.type === "application/pdf") {
-                const buffer = await file.arrayBuffer();
-                const pdf = await pdfjsLib.getDocument({data: buffer}).promise;
-                let text = "";
-                for (let i = 1; i <= pdf.numPages; i++) {
-                    const page = await pdf.getPage(i);
-                    const content = await page.getTextContent();
-                    text += content.items.map(s => s.str).join(" ") + " ";
-                }
-                sourceContent = text.replace(/\s+/g, ' ').trim();
-            } else {
-                sourceContent = await file.text();
+    async function handleInflow(f) {
+        if(!f) return;
+        log(`Processing: ${f.name}`);
+        if (f.type === "application/pdf") {
+            const buffer = await f.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({data: buffer}).promise;
+            let text = "";
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const content = await page.getTextContent();
+                text += content.items.map(s => s.str).join(" ") + " ";
             }
-            log(`Success: ${sourceContent.length} tokens ingested.`);
-            document.getElementById('out-box').value = `[SOURCE INITIALIZED]\n${sourceContent.substring(0, 500)}...`;
-        } catch(e) {
-            log(`Error: Conversion failed.`);
+            rawText = text.replace(/\s+/g, ' ').trim();
+        } else {
+            rawText = await f.text();
         }
+        log(`Success: ${rawText.length} tokens ready.`);
+        document.getElementById('out').value = `[SOURCE READY]\n${rawText.substring(0, 300)}...`;
     }
 
     function ignite() {
-        if(!sourceContent) return alert("Knowledge Stream Required.");
-        const arch = document.getElementById('arch-select').value;
-        const strat = document.getElementById('strategy-select').value;
-        const count = parseInt(document.getElementById('gen-count').value) || 1;
-        
-        log(`Igniting Autonomous Pipeline...`);
-        log(`Target: ${arch.toUpperCase()} | Strategy: ${strat.toUpperCase()}`);
-
-        const chunkSize = Math.ceil(sourceContent.length / count);
-        let batch = [];
-
-        for(let i = 0; i < count; i++) {
-            const chunk = sourceContent.substr(i * chunkSize, chunkSize);
-            if(chunk.length < 10) continue;
-
-            // Autonomous Logic: Structure is decided by System Config, Content is from Document
-            let outputStructure = "";
-            if(strat === 'nyaya') {
-                outputStructure = "1. Pratijna: [Thesis derived from source]\n2. Hetu: [Reasoning applied]\n3. Nigamana: [Logical Conclusion]";
-            } else if(strat === 'rag') {
-                outputStructure = `Context Chunk ID: ${i+1}\nEmbedding Ready: True`;
-            } else {
-                outputStructure = "Chain of Thought: [Step-by-step reasoning based on content]";
-            }
-
-            batch.push({
-                instruction: `Analyze source segment ${i+1} using ${strat} logic.`,
-                input: chunk.trim(),
-                output: outputStructure,
-                metadata: { arch, strat, ts: Date.now() }
-            });
-        }
-
-        db = db.concat(batch);
-        document.getElementById('out-box').value = JSON.stringify(db, null, 2);
-        log(`Pipeline Finished. ${batch.length} rows sequenced.`);
+        if(!rawText) return alert("Upload Source!");
+        const count = document.getElementById('g-count').value;
+        log(`Generating ${count} Nyaya sequences...`);
+        const entry = {
+            instruction: "Analysis Request",
+            input: rawText.substring(0, 800),
+            output: "1. Pratijna: [Thesis]\n2. Hetu: [Reasoning]\n3. Nigamana: [Success]",
+            ts: Date.now()
+        };
+        db.push(entry);
+        document.getElementById('out').value = JSON.stringify(db, null, 2);
     }
 
     function copyData() {
-        const box = document.getElementById('out-box');
-        box.select();
+        const o = document.getElementById('out');
+        o.select();
         document.execCommand('copy');
-        alert("Copied to clipboard.");
+        alert("Copied!");
     }
 
-    function shareData() {
-        if (navigator.share) {
-            navigator.share({title: 'MitSara Dataset', text: `Generated ${db.length} entries.`}).catch(console.error);
-        }
-    }
-
-    function downloadData() {
-        if(db.length === 0) return alert("Nothing to export.");
+    function exportData() {
+        if(db.length === 0) return alert("Dataset empty!");
         const blob = new Blob([JSON.stringify(db, null, 2)], {type: 'application/json'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `MitSara_Nexus_Export.json`;
+        a.download = "MitSara_Dataset.json";
         a.click();
+    }
+
+    function shareData() {
+        if(navigator.share) navigator.share({title: 'MitSara Dataset', text: document.getElementById('out').value});
     }
 </script>
 </body>
